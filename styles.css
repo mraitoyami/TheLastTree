@@ -92,7 +92,6 @@ body.locked {
 .hud-card,
 .restart-button,
 .difficulty-button,
-.music-button,
 .trash-card,
 .bin,
 .message-panel,
@@ -531,6 +530,7 @@ body.locked {
 
   .hero h1 {
     font-size: 2.2rem;
+    line-height: 1.05;
   }
 
   .subtitle {
@@ -621,6 +621,10 @@ body.locked {
     gap: 0.75rem;
   }
 
+  .play-area {
+    gap: 0.9rem;
+  }
+
   .bin::after {
     width: 58px;
     height: 58px;
@@ -671,8 +675,18 @@ body.locked {
 }
 
 @media (max-width: 480px) {
+  .game-shell {
+    width: calc(100% - 0.75rem);
+    padding: 0.75rem 0 1.1rem;
+  }
+
+  .hero {
+    margin-bottom: 0.8rem;
+  }
+
   .hud {
     grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
   }
 
   .hud-card {
@@ -698,17 +712,76 @@ body.locked {
 
   .subtitle {
     font-size: 0.9rem;
+    display: none;
+  }
+
+  .trash-card,
+  .message-panel,
+  .leaderboard-card {
+    padding: 0.85rem;
   }
 
   .trash-emoji {
     font-size: 3.2rem;
   }
 
+  .trash-card h2 {
+    font-size: 1.25rem;
+  }
+
+  .drag-help,
+  .trash-hint,
+  .leaderboard-copy,
+  .message-panel p {
+    font-size: 0.84rem;
+  }
+
   .bin {
     min-height: 132px;
+    padding: 0.85rem 0.8rem;
   }
 
   .bin-copy {
     font-size: 0.86rem;
+  }
+
+  .bin-title {
+    font-size: 1.05rem;
+  }
+
+  .bin-emoji {
+    font-size: 1.55rem;
+  }
+
+  .bin::after {
+    width: 48px;
+    height: 48px;
+  }
+
+  .leaderboard-list {
+    padding-left: 1rem;
+  }
+
+  .leaderboard-list li {
+    font-size: 0.88rem;
+  }
+
+  .start-screen,
+  .win-screen {
+    padding: 0.65rem;
+  }
+
+  .start-card,
+  .win-card {
+    padding: 1rem 0.85rem;
+  }
+
+  .start-card h2,
+  .win-card h2 {
+    font-size: 1.7rem;
+  }
+
+  .name-input {
+    margin-bottom: 0.8rem;
   }
 }
