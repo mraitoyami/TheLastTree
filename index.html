@@ -89,7 +89,7 @@
     <section class="leaderboard-panel">
       <div class="leaderboard-card">
         <h3>Leaderboard</h3>
-        <p class="leaderboard-copy">Top scores are saved in your browser on this device.</p>
+        <p id="leaderboard-copy" class="leaderboard-copy">Top scores are saved in your browser on this device.</p>
         <ol id="leaderboard-list" class="leaderboard-list">
           <li>No scores yet.</li>
         </ol>
@@ -122,6 +122,9 @@
 
   <div id="drag-ghost" class="drag-ghost" aria-hidden="true"></div>
 
+  <script src="firebase-config.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
   <script src="garbage-data.js"></script>
   <script src="script.js"></script>
 </body>
