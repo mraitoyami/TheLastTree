@@ -12,14 +12,48 @@ const messagePanel = document.getElementById("message-panel");
 const messageTitle = document.getElementById("message-title");
 const messageBody = document.getElementById("message-body");
 const restartButton = document.getElementById("restart-button");
+const startButton = document.getElementById("start-button");
+const startScreen = document.getElementById("start-screen");
+const musicButton = document.getElementById("music-button");
+const leaderboardList = document.getElementById("leaderboard-list");
+const dragGhost = document.getElementById("drag-ghost");
 const binButtons = [...document.querySelectorAll(".bin")];
+const difficultyButtons = [...document.querySelectorAll(".difficulty-button")];
 
 let currentIndex = 0;
 let isGameOver = false;
+let isPlaying = false;
 let deck = [];
 let score = 0;
-let timeLeft = 45;
+let timeLeft = 60;
 let timerId = null;
+let selectedDifficulty = "easy";
+let dragState = null;
+let musicEnabled = true;
+let musicIntervalId = null;
+
+const difficultySettings = {
+  easy: {
+    label: "Easy",
+    time: 75,
+    bonus: 4,
+    itemCount: 8,
+  },
+  normal: {
+    label: "Normal",
+    time: 55,
+    bonus: 3,
+    itemCount: 10,
+  },
+  hard: {
+    label: "Hard",
+    time: 40,
+    bonus: 2,
+    itemCount: 12,
+  },
+};
+
+const musicPattern = [262, 330, 392, 330, 294, 349, 440, 349];
 
 function playTone(frequency, duration, type = "sine", volume = 0.03) {
   const AudioContextClass = window.AudioContext || window.webkitAudioContext;
@@ -68,6 +102,38 @@ function playWinSound() {
   });
 }
 
+function playMusicStep() {
+  if (!musicEnabled || !isPlaying) {
+    return;
+  }
+
+  musicPattern.forEach((tone, index) => {
+    setTimeout(() => {
+      if (musicEnabled && isPlaying) {
+        playTone(tone, 0.22, "sine", 0.015);
+      }
+    }, index * 260);
+  });
+}
+
+function stopMusic() {
+  if (musicIntervalId) {
+    window.clearInterval(musicIntervalId);
+    musicIntervalId = null;
+  }
+}
+
+function startMusic() {
+  stopMusic();
+
+  if (!musicEnabled || !isPlaying) {
+    return;
+  }
+
+  playMusicStep();
+  musicIntervalId = window.setInterval(playMusicStep, musicPattern.length * 260 + 400);
+}
+
 function clearTimer() {
   if (timerId) {
     window.clearInterval(timerId);
@@ -84,6 +150,10 @@ function updateTimer() {
 }
 
 function startTimer() {
+  if (!isPlaying) {
+    return;
+  }
+
   clearTimer();
   updateTimer();
 
@@ -101,6 +171,18 @@ function pulseCard(className) {
   trashCardInner.classList.remove("celebrate", "shake");
   void trashCardInner.offsetWidth;
   trashCardInner.classList.add(className);
+}
+
+function formatBinName(binName) {
+  if (binName === "time ran out") {
+    return binName;
+  }
+
+  return binName.charAt(0).toUpperCase() + binName.slice(1);
+}
+
+function getSettings() {
+  return difficultySettings[selectedDifficulty];
 }
 
 function shuffle(source) {
@@ -136,6 +218,7 @@ function renderCurrentItem() {
   const currentItem = deck[currentIndex];
 
   if (!currentItem) {
+    itemCount.textContent = `0 / ${deck.length}`;
     return;
   }
 
@@ -148,38 +231,48 @@ function renderCurrentItem() {
 
 function handleWin() {
   isGameOver = true;
+  isPlaying = false;
   clearTimer();
+  stopMusic();
   setBinsDisabled(true);
   statusText.textContent = "You win";
   playWinSound();
   pulseCard("celebrate");
+  saveScore();
+  renderLeaderboard();
   showMessage(
     "You cleaned up the whole park!",
-    `Every item was sorted correctly. Final score: ${score}. Press Restart to play again.`,
+    `Every item was sorted correctly on ${getSettings().label}. Final score: ${score}. Press Play Again to go another round.`,
     "win"
   );
 }
 
 function handleLoss(correctBin) {
   isGameOver = true;
+  isPlaying = false;
   clearTimer();
+  stopMusic();
   setBinsDisabled(true);
   statusText.textContent = "You lose";
 
   if (correctBin === "time ran out") {
     playWrongSound();
     pulseCard("shake");
-    showMessage("Time's up!", `You scored ${score} before the timer ended. Press Restart to try again.`, "lose");
+    saveScore();
+    renderLeaderboard();
+    showMessage("Time's up!", `You scored ${score} before the timer ended. Press Play Again to try again.`, "lose");
     return;
   }
 
   playWrongSound();
   pulseCard("shake");
-  showMessage("Wrong bin!", `That item belonged in ${correctBin}. Press Restart to try again.`, "lose");
+  saveScore();
+  renderLeaderboard();
+  showMessage("Wrong bin!", `That item belonged in ${formatBinName(correctBin)}. Press Play Again to try again.`, "lose");
 }
 
 function handleSelection(selectedBin) {
-  if (isGameOver) {
+  if (isGameOver || !isPlaying) {
     return;
   }
 
@@ -191,7 +284,7 @@ function handleSelection(selectedBin) {
   }
 
   score += 100;
-  timeLeft += 3;
+  timeLeft += getSettings().bonus;
   updateScore();
   updateTimer();
   playCorrectSound();
@@ -215,16 +308,167 @@ function restartGame() {
     return;
   }
 
-  deck = shuffle(items);
+  const settings = getSettings();
+  deck = shuffle(items).slice(0, Math.min(settings.itemCount, items.length));
   currentIndex = 0;
   isGameOver = false;
+  isPlaying = true;
   score = 0;
-  timeLeft = 45;
+  timeLeft = settings.time;
   setBinsDisabled(false);
   updateScore();
   startTimer();
-  showMessage("Ready?", `Sort all ${deck.length} items correctly before time runs out.`);
+  startMusic();
+  showMessage(
+    "Go!",
+    `You're playing ${settings.label}. Sort all ${deck.length} items correctly before time runs out.`,
+  );
   renderCurrentItem();
+}
+
+function setDifficulty(nextDifficulty) {
+  selectedDifficulty = nextDifficulty;
+
+  difficultyButtons.forEach((button) => {
+    button.classList.toggle("active", button.dataset.difficulty === nextDifficulty);
+  });
+
+  const settings = getSettings();
+  timeLeft = settings.time;
+  updateTimer();
+  showMessage("Difficulty selected", `${settings.label} gives you ${settings.time} seconds and +${settings.bonus}s for each correct sort.`);
+}
+
+function loadScores() {
+  try {
+    const raw = window.localStorage.getItem("garbage-sorting-leaderboard");
+    return raw ? JSON.parse(raw) : [];
+  } catch {
+    return [];
+  }
+}
+
+function saveScore() {
+  if (score <= 0) {
+    return;
+  }
+
+  const scores = loadScores();
+  scores.push({
+    score,
+    difficulty: getSettings().label,
+    date: new Date().toLocaleDateString(),
+  });
+
+  scores.sort((left, right) => right.score - left.score);
+  const trimmed = scores.slice(0, 5);
+
+  try {
+    window.localStorage.setItem("garbage-sorting-leaderboard", JSON.stringify(trimmed));
+  } catch {
+    return;
+  }
+}
+
+function renderLeaderboard() {
+  const scores = loadScores();
+
+  if (!scores.length) {
+    leaderboardList.innerHTML = "<li>No scores yet.</li>";
+    return;
+  }
+
+  leaderboardList.innerHTML = scores
+    .map((entry) => `<li>${entry.score} points - ${entry.difficulty} - ${entry.date}</li>`)
+    .join("");
+}
+
+function hideStartScreen() {
+  startScreen.classList.add("hidden");
+  document.body.classList.remove("locked");
+}
+
+function updateMusicButton() {
+  musicButton.textContent = `Music: ${musicEnabled ? "On" : "Off"}`;
+}
+
+function clearDragHighlights() {
+  binButtons.forEach((button) => button.classList.remove("drag-over"));
+}
+
+function updateGhostPosition(clientX, clientY) {
+  dragGhost.style.left = `${clientX}px`;
+  dragGhost.style.top = `${clientY}px`;
+}
+
+function findBinAtPoint(clientX, clientY) {
+  const target = document.elementFromPoint(clientX, clientY);
+  return target ? target.closest(".bin") : null;
+}
+
+function startPointerDrag(clientX, clientY) {
+  if (!isPlaying || isGameOver) {
+    return;
+  }
+
+  const currentItem = deck[currentIndex];
+
+  if (!currentItem) {
+    return;
+  }
+
+  dragState = {
+    clientX,
+    clientY,
+  };
+
+  dragGhost.innerHTML = `<div class="trash-emoji">${currentItem.emoji}</div><div>${currentItem.name}</div>`;
+  dragGhost.classList.add("visible");
+  trashCardInner.classList.add("dragging");
+  updateGhostPosition(clientX, clientY);
+}
+
+function movePointerDrag(clientX, clientY) {
+  if (!dragState) {
+    return;
+  }
+
+  dragState.clientX = clientX;
+  dragState.clientY = clientY;
+  updateGhostPosition(clientX, clientY);
+  clearDragHighlights();
+
+  const hoveredBin = findBinAtPoint(clientX, clientY);
+
+  if (hoveredBin && !hoveredBin.disabled) {
+    hoveredBin.classList.add("drag-over");
+  }
+}
+
+function endPointerDrag(clientX, clientY) {
+  if (!dragState) {
+    return;
+  }
+
+  movePointerDrag(clientX, clientY);
+
+  const hoveredBin = findBinAtPoint(clientX, clientY);
+  dragState = null;
+  dragGhost.classList.remove("visible");
+  trashCardInner.classList.remove("dragging");
+  clearDragHighlights();
+
+  if (hoveredBin && !hoveredBin.disabled) {
+    handleSelection(hoveredBin.dataset.bin);
+  }
+}
+
+function handlePointerMove(event) {
+  movePointerDrag(event.clientX, event.clientY);
+}
+
+function handlePointerUp(event) {
+  endPointerDrag(event.clientX, event.clientY);
 }
 
 binButtons.forEach((button) => {
@@ -253,20 +497,70 @@ binButtons.forEach((button) => {
 });
 
 trashCardInner.addEventListener("dragstart", (event) => {
-  if (isGameOver) {
+  if (isGameOver || !isPlaying) {
     event.preventDefault();
     return;
   }
 
   trashCardInner.classList.add("dragging");
+  event.dataTransfer.effectAllowed = "move";
   event.dataTransfer.setData("text/plain", deck[currentIndex].name);
 });
 
 trashCardInner.addEventListener("dragend", () => {
   trashCardInner.classList.remove("dragging");
-  binButtons.forEach((button) => button.classList.remove("drag-over"));
+  clearDragHighlights();
+});
+
+trashCardInner.addEventListener("pointerdown", (event) => {
+  startPointerDrag(event.clientX, event.clientY);
+});
+
+window.addEventListener("pointermove", handlePointerMove);
+window.addEventListener("pointerup", handlePointerUp);
+window.addEventListener("pointercancel", () => {
+  if (!dragState) {
+    return;
+  }
+
+  dragState = null;
+  dragGhost.classList.remove("visible");
+  trashCardInner.classList.remove("dragging");
+  clearDragHighlights();
+});
+
+trashCardInner.addEventListener("keydown", (event) => {
+  if (event.key === "Enter" || event.key === " ") {
+    event.preventDefault();
+    showMessage("Sorting help", "Tap or click a bin now, or drag the item into one of the bins.");
+  }
+});
+
+difficultyButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    setDifficulty(button.dataset.difficulty);
+  });
+});
+
+musicButton.addEventListener("click", () => {
+  musicEnabled = !musicEnabled;
+  updateMusicButton();
+
+  if (musicEnabled) {
+    startMusic();
+  } else {
+    stopMusic();
+  }
 });
 
 restartButton.addEventListener("click", restartGame);
+startButton.addEventListener("click", () => {
+  hideStartScreen();
+  restartGame();
+});
 
-restartGame();
+document.body.classList.add("locked");
+setDifficulty(selectedDifficulty);
+updateScore();
+updateMusicButton();
+renderLeaderboard();
