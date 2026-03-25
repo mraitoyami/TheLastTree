@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Garbage Sorting Game</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="game-shell">
+    <section class="hero">
+      <p class="eyebrow">Keep the city clean</p>
+      <h1>Garbage Sorting Game</h1>
+      <p class="subtitle">
+        Sort each piece of trash into the correct bin. One wrong move and the round is over.
+      </p>
+    </section>
+
+    <section class="hud">
+      <div class="hud-card">
+        <span class="label">Item</span>
+        <span id="item-count">1 / 8</span>
+      </div>
+      <div class="hud-card">
+        <span class="label">Status</span>
+        <span id="status-text">Choose the right bin</span>
+      </div>
+      <button id="restart-button" class="restart-button" type="button">Restart</button>
+    </section>
+
+    <section class="play-area">
+      <div class="trash-card">
+        <span class="trash-label">Current trash</span>
+        <div id="trash-emoji" class="trash-emoji" aria-hidden="true">🍌</div>
+        <h2 id="trash-name">Banana Peel</h2>
+        <p id="trash-hint" class="trash-hint">This item needs to go into the correct bin.</p>
+      </div>
+
+      <div class="bins" role="group" aria-label="Sorting bins">
+        <button class="bin organic" data-bin="organic" type="button">
+          <span class="bin-emoji" aria-hidden="true">🌿</span>
+          <span class="bin-title">Organic</span>
+          <span class="bin-copy">Food scraps and compostable waste</span>
+        </button>
+        <button class="bin recycle" data-bin="recycle" type="button">
+          <span class="bin-emoji" aria-hidden="true">♻️</span>
+          <span class="bin-title">Recycle</span>
+          <span class="bin-copy">Paper, cans, and clean plastic</span>
+        </button>
+        <button class="bin landfill" data-bin="landfill" type="button">
+          <span class="bin-emoji" aria-hidden="true">🗑️</span>
+          <span class="bin-title">Landfill</span>
+          <span class="bin-copy">Trash that cannot be recycled</span>
+        </button>
+      </div>
+    </section>
+
+    <section id="message-panel" class="message-panel" aria-live="polite">
+      <h3 id="message-title">Ready?</h3>
+      <p id="message-body">Sort all 8 items correctly to win.</p>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
