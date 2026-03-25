@@ -42,7 +42,6 @@
         <button class="difficulty-button" data-difficulty="normal" type="button">Normal</button>
         <button class="difficulty-button" data-difficulty="hard" type="button">Hard</button>
       </div>
-      <button id="music-button" class="music-button" type="button">Music: On</button>
     </section>
 
     <section class="play-area">
@@ -102,6 +101,8 @@
     <div class="start-card">
       <p class="eyebrow">Sort fast. Sort smart.</p>
       <h2>Start The Cleanup</h2>
+      <label class="name-field" for="player-name">Your name</label>
+      <input id="player-name" class="name-input" type="text" maxlength="18" placeholder="Enter your name">
       <p>
         Drag or tap each garbage item into the right bin. One mistake ends the run, and the timer keeps ticking.
       </p>
@@ -120,19 +121,6 @@
   </div>
 
   <div id="drag-ghost" class="drag-ghost" aria-hidden="true"></div>
-
-  <audio id="bg-music" loop preload="auto">
-    <source src="assets/audio/background-music.mp3" type="audio/mpeg">
-  </audio>
-  <audio id="correct-sfx" preload="auto">
-    <source src="assets/audio/correct.mp3" type="audio/mpeg">
-  </audio>
-  <audio id="wrong-sfx" preload="auto">
-    <source src="assets/audio/wrong.mp3" type="audio/mpeg">
-  </audio>
-  <audio id="win-sfx" preload="auto">
-    <source src="assets/audio/win.mp3" type="audio/mpeg">
-  </audio>
 
   <script src="garbage-data.js"></script>
   <script src="script.js"></script>
