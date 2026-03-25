@@ -22,6 +22,14 @@
         <span id="item-count">1 / 8</span>
       </div>
       <div class="hud-card">
+        <span class="label">Score</span>
+        <span id="score-text">0</span>
+      </div>
+      <div class="hud-card">
+        <span class="label">Time</span>
+        <span id="timer-text">30s</span>
+      </div>
+      <div class="hud-card">
         <span class="label">Status</span>
         <span id="status-text">Choose the right bin</span>
       </div>
@@ -31,9 +39,19 @@
     <section class="play-area">
       <div class="trash-card">
         <span class="trash-label">Current trash</span>
-        <div id="trash-emoji" class="trash-emoji" aria-hidden="true">🍌</div>
-        <h2 id="trash-name">Banana Peel</h2>
-        <p id="trash-hint" class="trash-hint">This item needs to go into the correct bin.</p>
+        <div
+          id="trash-card-inner"
+          class="trash-card-inner"
+          draggable="true"
+          tabindex="0"
+          role="button"
+          aria-describedby="drag-help"
+        >
+          <div id="trash-emoji" class="trash-emoji" aria-hidden="true">🍌</div>
+          <h2 id="trash-name">Banana Peel</h2>
+          <p id="trash-hint" class="trash-hint">This item needs to go into the correct bin.</p>
+        </div>
+        <p id="drag-help" class="drag-help">Drag this trash onto a bin, or click a bin to sort it.</p>
       </div>
 
       <div class="bins" role="group" aria-label="Sorting bins">
@@ -61,6 +79,7 @@
     </section>
   </main>
 
+  <script src="garbage-data.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
