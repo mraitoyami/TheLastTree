@@ -128,7 +128,6 @@ body.locked {
 }
 
 .difficulty-button,
-.music-button,
 .start-button {
   border: 0;
   cursor: pointer;
@@ -147,8 +146,6 @@ body.locked {
 .restart-button:hover,
 .difficulty-button:hover,
 .difficulty-button:focus-visible,
-.music-button:hover,
-.music-button:focus-visible,
 .start-button:hover,
 .start-button:focus-visible,
 .restart-button:focus-visible,
@@ -371,6 +368,30 @@ body.locked {
   margin: 0 0 1rem;
   color: var(--muted);
   font-size: 1.05rem;
+}
+
+.name-field {
+  display: block;
+  margin-bottom: 0.45rem;
+  text-align: left;
+  color: var(--text);
+  font-weight: 700;
+}
+
+.name-input {
+  width: 100%;
+  margin-bottom: 1rem;
+  padding: 0.95rem 1rem;
+  border: 1px solid rgba(24, 50, 41, 0.12);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--text);
+  font: inherit;
+}
+
+.name-input:focus {
+  outline: 2px solid rgba(36, 129, 166, 0.35);
+  border-color: rgba(36, 129, 166, 0.5);
 }
 
 .start-button {
