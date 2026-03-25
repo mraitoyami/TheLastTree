@@ -14,9 +14,16 @@ const messageBody = document.getElementById("message-body");
 const restartButton = document.getElementById("restart-button");
 const startButton = document.getElementById("start-button");
 const startScreen = document.getElementById("start-screen");
+const winScreen = document.getElementById("win-screen");
+const winSummary = document.getElementById("win-summary");
+const winPlayAgainButton = document.getElementById("win-play-again");
 const musicButton = document.getElementById("music-button");
 const leaderboardList = document.getElementById("leaderboard-list");
 const dragGhost = document.getElementById("drag-ghost");
+const bgMusic = document.getElementById("bg-music");
+const correctSfx = document.getElementById("correct-sfx");
+const wrongSfx = document.getElementById("wrong-sfx");
+const winSfx = document.getElementById("win-sfx");
 const binButtons = [...document.querySelectorAll(".bin")];
 const difficultyButtons = [...document.querySelectorAll(".difficulty-button")];
 
@@ -31,6 +38,7 @@ let selectedDifficulty = "easy";
 let dragState = null;
 let musicEnabled = true;
 let musicIntervalId = null;
+const brokenAudioIds = new Set();
 
 const difficultySettings = {
   easy: {
@@ -88,18 +96,45 @@ function playTone(frequency, duration, type = "sine", volume = 0.03) {
 }
 
 function playCorrectSound() {
+  if (playAudio(correctSfx)) {
+    return;
+  }
+
   playTone(720, 0.12, "triangle");
   setTimeout(() => playTone(920, 0.12, "triangle"), 90);
 }
 
 function playWrongSound() {
+  if (playAudio(wrongSfx)) {
+    return;
+  }
+
   playTone(240, 0.22, "sawtooth");
 }
 
 function playWinSound() {
+  if (playAudio(winSfx)) {
+    return;
+  }
+
   [520, 660, 880].forEach((tone, index) => {
     setTimeout(() => playTone(tone, 0.16, "triangle"), index * 110);
   });
+}
+
+function playAudio(audioElement) {
+  if (!audioElement || !audioElement.currentSrc || brokenAudioIds.has(audioElement.id)) {
+    return false;
+  }
+
+  audioElement.currentTime = 0;
+  const playAttempt = audioElement.play();
+
+  if (playAttempt && typeof playAttempt.catch === "function") {
+    playAttempt.catch(() => {});
+  }
+
+  return true;
 }
 
 function playMusicStep() {
@@ -121,12 +156,27 @@ function stopMusic() {
     window.clearInterval(musicIntervalId);
     musicIntervalId = null;
   }
+
+  if (bgMusic) {
+    bgMusic.pause();
+    bgMusic.currentTime = 0;
+  }
 }
 
 function startMusic() {
   stopMusic();
 
   if (!musicEnabled || !isPlaying) {
+    return;
+  }
+
+  if (bgMusic && bgMusic.currentSrc && !brokenAudioIds.has(bgMusic.id)) {
+    const playAttempt = bgMusic.play();
+
+    if (playAttempt && typeof playAttempt.catch === "function") {
+      playAttempt.catch(() => {});
+    }
+
     return;
   }
 
@@ -240,6 +290,7 @@ function handleWin() {
   pulseCard("celebrate");
   saveScore();
   renderLeaderboard();
+  showWinScreen();
   showMessage(
     "You cleaned up the whole park!",
     `Every item was sorted correctly on ${getSettings().label}. Final score: ${score}. Press Play Again to go another round.`,
@@ -316,6 +367,7 @@ function restartGame() {
   score = 0;
   timeLeft = settings.time;
   setBinsDisabled(false);
+  hideWinScreen();
   updateScore();
   startTimer();
   startMusic();
@@ -386,6 +438,15 @@ function renderLeaderboard() {
 function hideStartScreen() {
   startScreen.classList.add("hidden");
   document.body.classList.remove("locked");
+}
+
+function showWinScreen() {
+  winSummary.textContent = `Score: ${score} points on ${getSettings().label} difficulty with ${timeLeft} seconds left.`;
+  winScreen.classList.remove("hidden");
+}
+
+function hideWinScreen() {
+  winScreen.classList.add("hidden");
 }
 
 function updateMusicButton() {
@@ -557,6 +618,17 @@ restartButton.addEventListener("click", restartGame);
 startButton.addEventListener("click", () => {
   hideStartScreen();
   restartGame();
+});
+winPlayAgainButton.addEventListener("click", restartGame);
+
+[bgMusic, correctSfx, wrongSfx, winSfx].forEach((audioElement) => {
+  if (!audioElement) {
+    return;
+  }
+
+  audioElement.addEventListener("error", () => {
+    brokenAudioIds.add(audioElement.id);
+  });
 });
 
 document.body.classList.add("locked");
