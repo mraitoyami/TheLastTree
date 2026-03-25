@@ -293,6 +293,16 @@ function restartGame() {
   renderCurrentItem();
 }
 
+function showStartScreen(prefillName = playerName) {
+  startScreen.classList.remove("hidden");
+  document.body.classList.add("locked");
+  playerNameInput.value = prefillName || "";
+  window.setTimeout(() => {
+    playerNameInput.focus();
+    playerNameInput.select();
+  }, 0);
+}
+
 function setDifficulty(nextDifficulty) {
   selectedDifficulty = nextDifficulty;
 
@@ -519,7 +529,7 @@ difficultyButtons.forEach((button) => {
   });
 });
 
-restartButton.addEventListener("click", restartGame);
+restartButton.addEventListener("click", showStartScreen);
 startButton.addEventListener("click", () => {
   const nextName = sanitizePlayerName(playerNameInput.value);
 
@@ -533,7 +543,10 @@ startButton.addEventListener("click", () => {
   hideStartScreen();
   restartGame();
 });
-winPlayAgainButton.addEventListener("click", restartGame);
+winPlayAgainButton.addEventListener("click", () => {
+  hideWinScreen();
+  showStartScreen(playerName);
+});
 
 playerNameInput.addEventListener("keydown", (event) => {
   if (event.key === "Enter") {
@@ -545,3 +558,5 @@ document.body.classList.add("locked");
 setDifficulty(selectedDifficulty);
 updateScore();
 renderLeaderboard();
+setBinsDisabled(true);
+showStartScreen();
