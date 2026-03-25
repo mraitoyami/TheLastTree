@@ -21,6 +21,7 @@ const playerNameInput = document.getElementById("player-name");
 const leaderboardList = document.getElementById("leaderboard-list");
 const leaderboardCopy = document.getElementById("leaderboard-copy");
 const dragGhost = document.getElementById("drag-ghost");
+const difficultySelect = document.getElementById("difficulty-select");
 const binButtons = [...document.querySelectorAll(".bin")];
 const difficultyButtons = [...document.querySelectorAll(".difficulty-button")];
 
@@ -320,6 +321,7 @@ function restartGame() {
 function showStartScreen(prefillName = playerName) {
   startScreen.classList.remove("hidden");
   document.body.classList.add("locked");
+  document.body.classList.remove("dragging-trash");
   playerNameInput.value = prefillName || "";
   window.setTimeout(() => {
     playerNameInput.focus();
@@ -333,6 +335,10 @@ function setDifficulty(nextDifficulty) {
   difficultyButtons.forEach((button) => {
     button.classList.toggle("active", button.dataset.difficulty === nextDifficulty);
   });
+
+  if (difficultySelect) {
+    difficultySelect.value = nextDifficulty;
+  }
 
   const settings = getSettings();
   timeLeft = settings.time;
@@ -497,6 +503,7 @@ function startPointerDrag(clientX, clientY) {
   dragGhost.innerHTML = `<div class="trash-emoji">${currentItem.emoji}</div><div>${currentItem.name}</div>`;
   dragGhost.classList.add("visible");
   trashCardInner.classList.add("dragging");
+  document.body.classList.add("dragging-trash");
   updateGhostPosition(clientX, clientY);
 }
 
@@ -528,6 +535,7 @@ function endPointerDrag(clientX, clientY) {
   dragState = null;
   dragGhost.classList.remove("visible");
   trashCardInner.classList.remove("dragging");
+  document.body.classList.remove("dragging-trash");
   clearDragHighlights();
 
   if (hoveredBin && !hoveredBin.disabled) {
@@ -585,10 +593,17 @@ trashCardInner.addEventListener("dragend", () => {
 });
 
 trashCardInner.addEventListener("pointerdown", (event) => {
+  event.preventDefault();
   startPointerDrag(event.clientX, event.clientY);
 });
 
-window.addEventListener("pointermove", handlePointerMove);
+window.addEventListener("pointermove", (event) => {
+  if (dragState) {
+    event.preventDefault();
+  }
+
+  handlePointerMove(event);
+}, { passive: false });
 window.addEventListener("pointerup", handlePointerUp);
 window.addEventListener("pointercancel", () => {
   if (!dragState) {
@@ -598,6 +613,7 @@ window.addEventListener("pointercancel", () => {
   dragState = null;
   dragGhost.classList.remove("visible");
   trashCardInner.classList.remove("dragging");
+  document.body.classList.remove("dragging-trash");
   clearDragHighlights();
 });
 
@@ -613,6 +629,12 @@ difficultyButtons.forEach((button) => {
     setDifficulty(button.dataset.difficulty);
   });
 });
+
+if (difficultySelect) {
+  difficultySelect.addEventListener("change", () => {
+    setDifficulty(difficultySelect.value);
+  });
+}
 
 restartButton.addEventListener("click", () => {
   playerName = "";
