@@ -9,9 +9,9 @@
 <body>
   <main class="shell">
     <section class="panel">
-      <p class="eyebrow">2D Pixel RPG</p>
+      <p class="eyebrow">3D Browser RPG</p>
       <h1>Lantern Knight</h1>
-      <p class="copy">Clear the dungeon, collect crystals, and survive inside a limited field of view.</p>
+      <p class="copy">Walk a first-person dungeon, cut through shadows, and survive inside your lantern's field of view.</p>
 
       <div class="stats">
         <div class="stat">
@@ -29,17 +29,18 @@
       </div>
 
       <div class="controls">
-        <p><kbd>WASD</kbd> move</p>
+        <p><kbd>W/S</kbd> forward/back</p>
+        <p><kbd>A/D</kbd> turn</p>
         <p><kbd>Space</kbd> attack</p>
-        <p><kbd>Shift</kbd> sprint</p>
+        <p><kbd>Shift</kbd> strafe</p>
         <p><kbd>R</kbd> restart</p>
       </div>
 
-      <p class="message" id="messageText">Find three crystals and defeat every shadow.</p>
+      <p class="message" id="messageText">Find three crystals, defeat every shadow, and stay inside the lantern beam.</p>
     </section>
 
     <section class="game-wrap">
-      <canvas id="game" width="960" height="640" aria-label="Lantern Knight game"></canvas>
+      <canvas id="game" width="960" height="640" aria-label="Lantern Knight 3D game"></canvas>
       <div class="overlay hidden" id="overlay">
         <div class="overlay-card">
           <h2 id="overlayTitle">You fell in the dark.</h2>
