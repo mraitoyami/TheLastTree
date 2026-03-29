@@ -16,11 +16,11 @@ const MAP = [
   "#..T...T...T...p...T...#",
   "#.T....T......T....T...#",
   "#....T.....o......T....#",
-  "#..T....#####....T...T.#",
-  "#.....T.#HHH#..T.......#",
-  "#..T....#PBG#.....T....#",
-  "#.......#HHH#..T....o..#",
-  "#.T...T.#####.....T....#",
+  "#..T....##.##....T...T.#",
+  "#.....T.#H.H#..T.......#",
+  "#..T.....PBG......T....#",
+  "#.......#...#..T....o..#",
+  "#.T...T.##.##.....T....#",
   "#.....T.....T...T......#",
   "#..o......T......p..T..#",
   "#....T........T........#",
@@ -565,6 +565,7 @@ function renderScene() {
   ground.addColorStop(1, "#182112");
   ctx.fillStyle = ground;
   ctx.fillRect(0, height * 0.45, width, height);
+  drawGroundBackdrop(width, height);
 
   for (let x = 0; x < width; x += 1) {
     const rayAngle = game.player.angle - HALF_FOV + (x / width) * FOV;
@@ -602,6 +603,9 @@ function renderScene() {
       ctx.fillRect(x, wallTop + wallHeight * 0.44, 1, 2);
       ctx.fillRect(x, wallTop + wallHeight * 0.72, 1, 2);
     }
+
+    ctx.fillStyle = `rgba(0, 0, 0, ${Math.min(0.52, correctedDistance / (MAX_DEPTH * TILE) * 0.5)})`;
+    ctx.fillRect(x, wallTop + wallHeight, 1, height - wallTop - wallHeight);
   }
 
   renderSprites(bobY);
@@ -609,6 +613,31 @@ function renderScene() {
   renderCrosshair();
   renderMiniMap();
   renderStatusOverlay();
+}
+
+function drawGroundBackdrop(width, height) {
+  ctx.save();
+
+  for (let i = 0; i < 18; i += 1) {
+    const y = height * 0.55 + i * 16;
+    const alpha = 0.035 + i * 0.004;
+    ctx.fillStyle = `rgba(255, 241, 188, ${alpha})`;
+    ctx.fillRect(0, y, width, 1);
+  }
+
+  const path = ctx.createLinearGradient(width * 0.5, height, width * 0.5, height * 0.55);
+  path.addColorStop(0, "rgba(126, 102, 70, 0.42)");
+  path.addColorStop(1, "rgba(126, 102, 70, 0)");
+  ctx.fillStyle = path;
+  ctx.beginPath();
+  ctx.moveTo(width * 0.36, height);
+  ctx.lineTo(width * 0.46, height * 0.62);
+  ctx.lineTo(width * 0.54, height * 0.62);
+  ctx.lineTo(width * 0.64, height);
+  ctx.closePath();
+  ctx.fill();
+
+  ctx.restore();
 }
 
 function drawSkyBackdrop(width, height) {
@@ -751,6 +780,8 @@ function drawTreeSprite(left, top, size, distance) {
 
   ctx.fillStyle = "#59371d";
   ctx.fillRect(left + size * 0.43, top + size * 0.58, size * 0.14, size * 0.42);
+  ctx.fillStyle = "rgba(255,255,255,0.12)";
+  ctx.fillRect(left + size * 0.47, top + size * 0.6, size * 0.03, size * 0.3);
 
   ctx.fillStyle = "#285f2e";
   ctx.beginPath();
@@ -787,6 +818,8 @@ function drawBinSprite(left, top, size, blue) {
   ctx.fillRect(left + size * 0.16, top + size * 0.18, size * 0.68, size * 0.12);
   ctx.fillStyle = "rgba(255,255,255,0.22)";
   ctx.fillRect(left + size * 0.3, top + size * 0.32, size * 0.12, size * 0.5);
+  ctx.fillStyle = "rgba(0,0,0,0.16)";
+  ctx.fillRect(left + size * 0.26, top + size * 0.74, size * 0.48, size * 0.08);
   ctx.restore();
 }
 
@@ -802,6 +835,10 @@ function drawTrashSprite(left, top, size, plastic) {
   ctx.fill();
   ctx.fillStyle = plastic ? "#fff2bc" : "#c48d61";
   ctx.fillRect(left + size * 0.42, top + size * 0.34, size * 0.16, size * 0.14);
+  if (plastic) {
+    ctx.fillStyle = "rgba(255,255,255,0.18)";
+    ctx.fillRect(left + size * 0.46, top + size * 0.48, size * 0.08, size * 0.18);
+  }
   ctx.restore();
 }
 
@@ -818,6 +855,8 @@ function renderWeapon(bobY) {
   ctx.fillRect(handleX - 10 - swing * 22, handleY - 72, 22, 44);
   ctx.fillStyle = "rgba(255,255,255,0.22)";
   ctx.fillRect(handleX - 28 - swing * 30, handleY - 72, 14, 8);
+  ctx.fillStyle = "rgba(0,0,0,0.18)";
+  ctx.fillRect(handleX + 8, handleY + 24, 12, 70);
 }
 
 function renderCrosshair() {
