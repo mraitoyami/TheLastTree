@@ -101,6 +101,11 @@ const RAY_STEP = 4;
 const MOVE_SPEED = 120;
 const STRAFE_SPEED = 95;
 const TURN_SPEED = 0.0024;
+const LOOK_PITCH_SPEED = 0.6;
+const MAX_LOOK_PITCH = 120;
+const CROSSHAIR_DRIFT = 0.22;
+const MAX_CROSSHAIR_DRIFT = 70;
+const CROSSHAIR_RETURN_SPEED = 7;
 const INTERACT_RANGE = 1.2;
 const CUT_RANGE = 1.35;
 const BASE_ACTION_RANGE = 1.9;
@@ -188,7 +193,14 @@ function createGame() {
     plasticResidue: 0,
     blessingsClaimed: 0,
     base: { x: startX, y: startY },
-    player: { x: startX, y: startY, angle: -Math.PI / 2, radius: 13 },
+    player: {
+      x: startX,
+      y: startY,
+      angle: -Math.PI / 2,
+      pitch: 0,
+      crosshairX: 0,
+      radius: 13,
+    },
     trees,
     trash,
     bins,
@@ -386,6 +398,18 @@ function isNearBase() {
   return distance <= BASE_ACTION_RANGE;
 }
 
+function getCrosshairPosition() {
+  return {
+    x: canvas.width / 2 + game.player.crosshairX,
+    y: canvas.height / 2 + game.player.pitch * 0.55,
+  };
+}
+
+function getAimAngle() {
+  const horizontalOffset = (game.player.crosshairX / (canvas.width * 0.5)) * HALF_FOV;
+  return normalizeAngle(game.player.angle + horizontalOffset);
+}
+
 function isVisible(x, y) {
   const dx = x - game.player.x;
   const dy = y - game.player.y;
@@ -394,11 +418,12 @@ function isVisible(x, y) {
   if (distance > MAX_DEPTH * TILE) return false;
 
   const angle = Math.atan2(dy, dx);
-  return Math.abs(angleDiff(angle, game.player.angle)) < HALF_FOV + 0.1;
+  return Math.abs(angleDiff(angle, getAimAngle())) < HALF_FOV + 0.1;
 }
 
 function getTarget(type) {
   const candidates = [];
+  const aimAngle = getAimAngle();
 
   if (type === "tree") {
     for (const tree of game.trees) {
@@ -410,7 +435,7 @@ function getTarget(type) {
       const dy = ty - game.player.y;
       const distance = Math.hypot(dx, dy) / TILE;
       const angle = Math.atan2(dy, dx);
-      const diff = Math.abs(angleDiff(angle, game.player.angle));
+      const diff = Math.abs(angleDiff(angle, aimAngle));
 
       if (distance <= CUT_RANGE && diff < 0.18 && hasLineOfSight(game.player.x, game.player.y, tx, ty)) {
         candidates.push({ object: tree, distance });
@@ -428,7 +453,7 @@ function getTarget(type) {
       const dy = ty - game.player.y;
       const distance = Math.hypot(dx, dy) / TILE;
       const angle = Math.atan2(dy, dx);
-      const diff = Math.abs(angleDiff(angle, game.player.angle));
+      const diff = Math.abs(angleDiff(angle, aimAngle));
 
       if (distance <= INTERACT_RANGE && diff < 0.22 && hasLineOfSight(game.player.x, game.player.y, tx, ty)) {
         candidates.push({ object: tree, distance });
@@ -446,7 +471,7 @@ function getTarget(type) {
       const dy = ty - game.player.y;
       const distance = Math.hypot(dx, dy) / TILE;
       const angle = Math.atan2(dy, dx);
-      const diff = Math.abs(angleDiff(angle, game.player.angle));
+      const diff = Math.abs(angleDiff(angle, aimAngle));
 
       if (distance <= INTERACT_RANGE && diff < 0.24 && hasLineOfSight(game.player.x, game.player.y, tx, ty)) {
         candidates.push({ object: item, distance });
@@ -462,7 +487,7 @@ function getTarget(type) {
       const dy = by - game.player.y;
       const distance = Math.hypot(dx, dy) / TILE;
       const angle = Math.atan2(dy, dx);
-      const diff = Math.abs(angleDiff(angle, game.player.angle));
+      const diff = Math.abs(angleDiff(angle, aimAngle));
 
       if (distance <= INTERACT_RANGE && diff < 0.28 && hasLineOfSight(game.player.x, game.player.y, bx, by)) {
         candidates.push({ object: bin, distance });
@@ -849,6 +874,7 @@ function update(dt) {
   clampSurvival();
 
   game.attackTimer = Math.max(0, game.attackTimer - dt);
+  game.player.crosshairX += (0 - game.player.crosshairX) * Math.min(1, dt * CROSSHAIR_RETURN_SPEED);
   game.bob += Math.hypot(moveX, moveY) > 0 ? dt * 8 : dt * 2;
 
   updateWorld(dt);
@@ -868,6 +894,8 @@ function renderScene() {
   const width = canvas.width;
   const height = canvas.height;
   const bobY = Math.sin(game.bob) * 4;
+  const cameraLift = Math.max(-MAX_LOOK_PITCH, Math.min(MAX_LOOK_PITCH, bobY + game.player.pitch));
+  const horizonY = Math.max(height * 0.28, Math.min(height * 0.78, height * 0.55 + cameraLift));
 
   ctx.clearRect(0, 0, width, height);
 
@@ -877,17 +905,17 @@ function renderScene() {
   sky.addColorStop(0.72, "#274d3f");
   sky.addColorStop(1, "#173027");
   ctx.fillStyle = sky;
-  ctx.fillRect(0, 0, width, height * 0.55);
+  ctx.fillRect(0, 0, width, horizonY);
 
-  drawSkyBackdrop(width, height);
+  drawSkyBackdrop(width, height, horizonY, cameraLift);
 
-  const ground = ctx.createLinearGradient(0, height * 0.45, 0, height);
+  const ground = ctx.createLinearGradient(0, horizonY - 30, 0, height);
   ground.addColorStop(0, "#53643a");
   ground.addColorStop(0.52, "#2f3e22");
   ground.addColorStop(1, "#182112");
   ctx.fillStyle = ground;
-  ctx.fillRect(0, height * 0.45, width, height);
-  drawGroundBackdrop(width, height);
+  ctx.fillRect(0, horizonY, width, height - horizonY);
+  drawGroundBackdrop(width, height, horizonY);
 
   for (let x = 0; x < width; x += 1) {
     const rayAngle = game.player.angle - HALF_FOV + (x / width) * FOV;
@@ -896,7 +924,7 @@ function renderScene() {
     game.depthBuffer[x] = correctedDistance;
 
     const wallHeight = Math.min(height, (TILE * 360) / Math.max(correctedDistance, 1));
-    const wallTop = height / 2 - wallHeight / 2 + bobY;
+    const wallTop = height / 2 - wallHeight / 2 + cameraLift;
     const shade = Math.max(0.22, 1 - correctedDistance / (MAX_DEPTH * TILE));
     const edgeFactor = Math.abs((ray.hitX / TILE) % 1) < 0.08 || Math.abs((ray.hitX / TILE) % 1) > 0.92;
 
@@ -928,32 +956,32 @@ function renderScene() {
     ctx.fillRect(x, wallTop + wallHeight, 1, height - wallTop - wallHeight);
   }
 
-  renderSprites(bobY);
-  renderWeapon(bobY);
+  renderSprites(cameraLift);
+  renderWeapon(cameraLift);
   renderCrosshair();
   renderMiniMap();
   renderPressureEffects(width, height);
   renderStatusOverlay();
 }
 
-function drawGroundBackdrop(width, height) {
+function drawGroundBackdrop(width, height, horizonY) {
   ctx.save();
 
   for (let i = 0; i < 18; i += 1) {
-    const y = height * 0.55 + i * 16;
+    const y = horizonY + i * 16;
     const alpha = 0.035 + i * 0.004;
     ctx.fillStyle = `rgba(255, 241, 188, ${alpha})`;
     ctx.fillRect(0, y, width, 1);
   }
 
-  const path = ctx.createLinearGradient(width * 0.5, height, width * 0.5, height * 0.55);
+  const path = ctx.createLinearGradient(width * 0.5, height, width * 0.5, horizonY);
   path.addColorStop(0, "rgba(126, 102, 70, 0.42)");
   path.addColorStop(1, "rgba(126, 102, 70, 0)");
   ctx.fillStyle = path;
   ctx.beginPath();
   ctx.moveTo(width * 0.36, height);
-  ctx.lineTo(width * 0.46, height * 0.62);
-  ctx.lineTo(width * 0.54, height * 0.62);
+  ctx.lineTo(width * 0.46, horizonY + height * 0.07);
+  ctx.lineTo(width * 0.54, horizonY + height * 0.07);
   ctx.lineTo(width * 0.64, height);
   ctx.closePath();
   ctx.fill();
@@ -961,11 +989,11 @@ function drawGroundBackdrop(width, height) {
   ctx.restore();
 }
 
-function drawSkyBackdrop(width, height) {
+function drawSkyBackdrop(width, height, horizonY, cameraLift) {
   ctx.save();
 
   const sunX = width * 0.78;
-  const sunY = height * 0.16;
+  const sunY = height * 0.16 + cameraLift * 0.18;
   const sunGlow = ctx.createRadialGradient(sunX, sunY, 10, sunX, sunY, 130);
   sunGlow.addColorStop(0, "rgba(255, 243, 191, 0.95)");
   sunGlow.addColorStop(0.45, "rgba(255, 214, 135, 0.3)");
@@ -982,15 +1010,15 @@ function drawSkyBackdrop(width, height) {
 
   ctx.fillStyle = "rgba(34, 63, 52, 0.52)";
   ctx.beginPath();
-  ctx.moveTo(0, height * 0.42);
-  ctx.lineTo(width * 0.18, height * 0.28);
-  ctx.lineTo(width * 0.34, height * 0.4);
-  ctx.lineTo(width * 0.5, height * 0.26);
-  ctx.lineTo(width * 0.7, height * 0.4);
-  ctx.lineTo(width * 0.88, height * 0.22);
-  ctx.lineTo(width, height * 0.38);
-  ctx.lineTo(width, height * 0.55);
-  ctx.lineTo(0, height * 0.55);
+  ctx.moveTo(0, horizonY - height * 0.13);
+  ctx.lineTo(width * 0.18, horizonY - height * 0.27);
+  ctx.lineTo(width * 0.34, horizonY - height * 0.15);
+  ctx.lineTo(width * 0.5, horizonY - height * 0.29);
+  ctx.lineTo(width * 0.7, horizonY - height * 0.15);
+  ctx.lineTo(width * 0.88, horizonY - height * 0.33);
+  ctx.lineTo(width, horizonY - height * 0.17);
+  ctx.lineTo(width, horizonY);
+  ctx.lineTo(0, horizonY);
   ctx.closePath();
   ctx.fill();
 
@@ -998,9 +1026,9 @@ function drawSkyBackdrop(width, height) {
   for (let i = 0; i < width; i += 26) {
     const h = 45 + ((i * 13) % 42);
     ctx.beginPath();
-    ctx.moveTo(i, height * 0.55);
-    ctx.lineTo(i + 12, height * 0.55 - h);
-    ctx.lineTo(i + 26, height * 0.55);
+    ctx.moveTo(i, horizonY);
+    ctx.lineTo(i + 12, horizonY - h);
+    ctx.lineTo(i + 26, horizonY);
     ctx.closePath();
     ctx.fill();
   }
@@ -1008,7 +1036,7 @@ function drawSkyBackdrop(width, height) {
   ctx.restore();
 }
 
-function renderSprites(bobY) {
+function renderSprites(cameraLift) {
   const sprites = [];
 
   for (const tree of game.trees) {
@@ -1069,7 +1097,7 @@ function renderSprites(bobY) {
     const sizeBase = sprite.type === "tree" ? 420 : sprite.type === "bin" ? 210 : 190;
     const sizeLimit = sprite.type === "tree" ? 300 : 170;
     const size = Math.min(sizeLimit, ((TILE * sizeBase) / Math.max(distance, 1)) * sizeScale);
-    const screenY = canvas.height / 2 + bobY + Math.sin(sprite.pulse) * 5;
+    const screenY = canvas.height / 2 + cameraLift + Math.sin(sprite.pulse) * 5;
     const left = Math.round(screenX - size / 2);
     const top = Math.round(screenY - size * (sprite.type === "tree" ? 0.9 : 0.5));
     const sampleX = Math.max(0, Math.min(canvas.width - 1, Math.round(screenX)));
@@ -1229,10 +1257,10 @@ function drawTrashSprite(left, top, size, kind) {
   ctx.restore();
 }
 
-function renderWeapon(bobY) {
+function renderWeapon(cameraLift) {
   const swing = game.attackTimer > 0 ? Math.sin((game.attackTimer / 0.16) * Math.PI) : 0;
-  const handleX = canvas.width * 0.77 + swing * 26;
-  const handleY = canvas.height * 0.8 + bobY;
+  const handleX = canvas.width * 0.77 + swing * 26 + game.player.crosshairX * 0.2;
+  const handleY = canvas.height * 0.8 + cameraLift * 0.22;
 
   ctx.fillStyle = "#6d4a2d";
   ctx.fillRect(handleX, handleY, 16, 96);
@@ -1247,8 +1275,7 @@ function renderWeapon(bobY) {
 }
 
 function renderCrosshair() {
-  const cx = canvas.width / 2;
-  const cy = canvas.height / 2;
+  const { x: cx, y: cy } = getCrosshairPosition();
   ctx.strokeStyle = "rgba(240, 246, 220, 0.9)";
   ctx.lineWidth = 2;
   ctx.beginPath();
@@ -1413,6 +1440,14 @@ canvas.addEventListener("click", () => {
 document.addEventListener("mousemove", (event) => {
   if (document.pointerLockElement !== canvas || game.over) return;
   game.player.angle = normalizeAngle(game.player.angle + event.movementX * TURN_SPEED);
+  game.player.pitch = Math.max(
+    -MAX_LOOK_PITCH,
+    Math.min(MAX_LOOK_PITCH, game.player.pitch + event.movementY * LOOK_PITCH_SPEED)
+  );
+  game.player.crosshairX = Math.max(
+    -MAX_CROSSHAIR_DRIFT,
+    Math.min(MAX_CROSSHAIR_DRIFT, game.player.crosshairX + event.movementX * CROSSHAIR_DRIFT)
+  );
 });
 
 window.addEventListener("keydown", (event) => {
