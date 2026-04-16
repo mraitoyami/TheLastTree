@@ -1,71 +1,143 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lantern Knight</title>
-  <link rel="stylesheet" href="styles.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Garbage Sorting Game</title>
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <main class="shell">
-    <section class="panel">
-      <p class="eyebrow">3D Forest Consequence Game</p>
-      <h1>Lantern Knight</h1>
-      <p class="copy">Protect the forest, respect old and glowing trees, and sort plastic, organic, and toxic waste before the consequences stack up.</p>
+<main class="game-shell">
+<section class="hero">
+<p class="eyebrow">Keep the city clean</p>
+<h1>Garbage Sorting Game</h1>
+<p class="subtitle">
+Sort each piece of trash into the correct bin. One wrong move and the round is over.
+</p>
+</section>
 
-      <div class="stats">
-        <div class="stat">
-          <span>Oxygen</span>
-          <strong id="oxygenText">100%</strong>
-        </div>
-        <div class="stat">
-          <span>Heat / Fire</span>
-          <strong id="fireText">10%</strong>
-        </div>
-        <div class="stat">
-          <span>Stamina</span>
-          <strong id="staminaText">100%</strong>
-        </div>
-        <div class="stat">
-          <span>Materials</span>
-          <strong id="materialText">0 wood</strong>
-        </div>
-        <div class="stat">
-          <span>Eco Score</span>
-          <strong id="scoreText">0</strong>
-        </div>
-        <div class="stat">
-          <span>Carrying</span>
-          <strong id="carryText">Nothing</strong>
-        </div>
-      </div>
+<section class="hud">
+<div class="hud-card">
+<span class="label">Item</span>
+<span id="item-count">0 / 0</span>
+</div>
+<div class="hud-card">
+<span class="label">Score</span>
+<span id="score-text">0</span>
+</div>
+<div class="hud-card">
+<span class="label">Time</span>
+<span id="timer-text">30s</span>
+</div>
+<div class="hud-card">
+<span class="label">Status</span>
+<span id="status-text">Press start</span>
+</div>
+<button id="restart-button" class="restart-button" type="button">Play Again</button>
+</section>
 
-      <div class="controls">
-        <p><kbd>Mouse</kbd> look around</p>
-        <p><kbd>WASD</kbd> move</p>
-        <p><kbd>Shift</kbd> sprint</p>
-        <p><kbd>Space</kbd> cut tree</p>
-        <p><kbd>E</kbd> interact</p>
-        <p><kbd>Q</kbd> oxygen rig at base</p>
-        <p><kbd>F</kbd> firebreak at base</p>
-        <p><kbd>R</kbd> restart</p>
-      </div>
+<section class="controls-panel">
+<div class="difficulty-group" role="group" aria-label="Difficulty level">
+<button class="difficulty-button active" data-difficulty="easy" type="button">Easy</button>
+<button class="difficulty-button" data-difficulty="normal" type="button">Normal</button>
+<button class="difficulty-button" data-difficulty="hard" type="button">Hard</button>
+</div>
+      <label class="mobile-difficulty-label" for="difficulty-select">Difficulty</label>
+      <select id="difficulty-select" class="difficulty-select" aria-label="Choose difficulty">
+        <option value="easy">Easy</option>
+        <option value="normal">Normal</option>
+        <option value="hard">Hard</option>
+      </select>
+</section>
 
-      <p class="message" id="messageText">Use stamina carefully, cut trees for wood only when you must, and spend materials at the base before oxygen or heat spirals.</p>
-    </section>
+<section class="play-area">
+<div class="trash-card">
+<span class="trash-label">Current trash</span>
+<div
+id="trash-card-inner"
+class="trash-card-inner"
+draggable="true"
+tabindex="0"
+role="button"
+aria-describedby="drag-help"
+>
+<div id="trash-emoji" class="trash-emoji" aria-hidden="true">🍌</div>
+<h2 id="trash-name">Banana Peel</h2>
+<p id="trash-hint" class="trash-hint">This item needs to go into the correct bin.</p>
+</div>
+<p id="drag-help" class="drag-help">Drag this trash onto a bin, tap a bin, or use touch and drop on mobile.</p>
+</div>
 
-    <section class="game-wrap">
-      <canvas id="game" width="960" height="640" aria-label="Lantern Knight forest consequence game"></canvas>
-      <div class="overlay hidden" id="overlay">
-        <div class="overlay-card">
-          <h2 id="overlayTitle">You fell in the dark.</h2>
-          <p id="overlayText">Press R to try again.</p>
-          <button id="restartButton" type="button">Restart</button>
-        </div>
-      </div>
-    </section>
-  </main>
+<div class="bins" role="group" aria-label="Sorting bins">
+<button class="bin organic" data-bin="organic" type="button">
+<span class="bin-emoji" aria-hidden="true">🍃</span>
+<span class="bin-title">Organic</span>
+<span class="bin-copy">Food scraps and compostable waste</span>
+</button>
+<button class="bin recycle" data-bin="recycle" type="button">
+<span class="bin-emoji" aria-hidden="true">🧃</span>
+<span class="bin-title">Recycle</span>
+<span class="bin-copy">Paper, cans, and clean plastic</span>
+</button>
+<button class="bin landfill" data-bin="landfill" type="button">
+<span class="bin-emoji" aria-hidden="true">🧻</span>
+<span class="bin-title">Landfill</span>
+<span class="bin-copy">Trash that cannot be recycled</span>
+</button>
+</div>
+</section>
 
-  <script src="script.js"></script>
+<section id="message-panel" class="message-panel" aria-live="polite">
+<h3 id="message-title">Ready?</h3>
+<p id="message-body">Choose a difficulty and press Start Game.</p>
+</section>
+
+<section class="leaderboard-panel">
+<div class="leaderboard-card">
+<h3>Leaderboard</h3>
+<p id="leaderboard-copy" class="leaderboard-copy">Top scores are saved in your browser on this device.</p>
+<ol id="leaderboard-list" class="leaderboard-list">
+<li>No scores yet.</li>
+</ol>
+</div>
+</section>
+</main>
+
+<div id="start-screen" class="start-screen">
+<div class="start-card">
+<p class="eyebrow">Sort fast. Sort smart.</p>
+<h2>Start The Cleanup</h2>
+<label class="name-field" for="player-name">Your name</label>
+<input id="player-name" class="name-input" type="text" maxlength="18" placeholder="Enter your name">
+      <label class="mobile-difficulty-label" for="difficulty-select">Difficulty</label>
+      <select id="difficulty-select" class="difficulty-select" aria-label="Choose difficulty">
+        <option value="easy">Easy</option>
+        <option value="normal">Normal</option>
+        <option value="hard">Hard</option>
+      </select>
+<p>
+Drag or tap each garbage item into the right bin. One mistake ends the run, and the timer keeps ticking.
+</p>
+<button id="start-button" class="start-button" type="button">Start Game</button>
+</div>
+</div>
+
+<div id="win-screen" class="win-screen hidden">
+<div class="win-card">
+<p class="eyebrow">Perfect cleanup</p>
+<h2>You Win!</h2>
+<p id="win-summary">You sorted every item correctly.</p>
+<div class="win-stars" aria-hidden="true">★ ★ ★</div>
+<button id="win-play-again" class="start-button" type="button">Play Again</button>
+</div>
+</div>
+
+<div id="drag-ghost" class="drag-ghost" aria-hidden="true"></div>
+
+<script src="firebase-config.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="garbage-data.js"></script>
+<script src="script.js"></script>
 </body>
 </html>
