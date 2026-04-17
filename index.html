@@ -1,129 +1,33 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Roots &amp; Rust</title>
-  <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-  <main class="shell">
-    <section class="panel">
-      <p class="eyebrow">3D Forest Survival Prototype</p>
-      <h1>Roots &amp; Rust</h1>
-      <p class="copy">A simple survival loop: hunt food, sort trash, upgrade your weapon, and keep the camp alive long enough to win.</p>
-
-      <div class="objective">
-        <h2>Mission</h2>
-        <p>Bring back 4 food, sort all trash, and don't let oxygen hit 0 or fire hit 100.</p>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Eco Survival 3D</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div id="hud">
+      <h1>Eco Survival 3D</h1>
+      <p>Move: WASD | Look: Mouse drag | Action: E</p>
+      <div class="stats-grid">
+        <div>Health: <span id="health">100</span></div>
+        <div>Stamina: <span id="stamina">100</span></div>
+        <div>Food: <span id="food">0</span></div>
+        <div>Weapon Lv: <span id="weaponLevel">1</span></div>
+        <div>Fire Rate: <span id="fireRate">1.00</span></div>
+        <div>Oxygen: <span id="oxygen">50</span></div>
+        <div>Pollution: <span id="pollution">50</span></div>
+        <div>Forest: <span id="forestDensity">50</span></div>
+        <div>Eco Points: <span id="ecoPoints">0</span></div>
+        <div>Day: <span id="day">1</span></div>
       </div>
+      <p id="hint">Walk close to trees, bins, or animals and press E.</p>
+      <p id="message"></p>
+    </div>
 
-      <div class="difficulty">
-        <span class="difficulty-label">Mode</span>
-        <div class="difficulty-actions">
-          <button class="mode-button active" id="normalModeButton" type="button">Normal</button>
-          <button class="mode-button" id="easyModeButton" type="button">Easy</button>
-        </div>
-        <p class="difficulty-copy" id="modeText">Normal mode is now the default and much more forgiving than before.</p>
-      </div>
+    <canvas id="gameCanvas"></canvas>
 
-      <div class="stats">
-        <div class="stat">
-          <span>Oxygen</span>
-          <strong id="oxygenText">100%</strong>
-        </div>
-        <div class="stat">
-          <span>Heat / Fire</span>
-          <strong id="fireText">10%</strong>
-        </div>
-        <div class="stat">
-          <span>Stamina</span>
-          <strong id="staminaText">100%</strong>
-        </div>
-        <div class="stat">
-          <span>Wood</span>
-          <strong id="woodText">0 wood</strong>
-        </div>
-        <div class="stat">
-          <span>Weapon</span>
-          <strong id="weaponText">Stone Sling</strong>
-        </div>
-        <div class="stat">
-          <span>Fire Rate</span>
-          <strong id="rateText">0.7 / sec</strong>
-        </div>
-        <div class="stat">
-          <span>Camp Food</span>
-          <strong id="foodText">0 / 4</strong>
-        </div>
-        <div class="stat">
-          <span>Recycle Parts</span>
-          <strong id="recycleText">0</strong>
-        </div>
-        <div class="stat">
-          <span>Carrying</span>
-          <strong id="carryText">Nothing</strong>
-        </div>
-        <div class="stat">
-          <span>Eco Score</span>
-          <strong id="scoreText">0</strong>
-        </div>
-      </div>
-
-      <div class="controls">
-        <p><kbd>Mouse</kbd> look around</p>
-        <p><kbd>Touch drag</kbd> look around on phone</p>
-        <p><kbd>WASD</kbd> move</p>
-        <p><kbd>Shift</kbd> sprint</p>
-        <p><kbd>Click</kbd> fire / hunt</p>
-        <p><kbd>Touch buttons</kbd> move and act</p>
-        <p><kbd>Space</kbd> cut tree</p>
-        <p><kbd>E</kbd> pick up / sort / bless</p>
-        <p><kbd>Q</kbd> craft at camp</p>
-        <p><kbd>F</kbd> purifier at camp</p>
-        <p><kbd>R</kbd> restart</p>
-      </div>
-
-      <p class="message" id="messageText">Start by hunting food and sorting the trash near camp. Cut trees only when you need wood for upgrades.</p>
-    </section>
-
-    <section class="game-wrap">
-      <canvas id="game" width="960" height="640" aria-label="Roots and Rust forest consequence game"></canvas>
-      <div class="overlay hidden" id="overlay">
-        <div class="overlay-card">
-          <h2 id="overlayTitle">The valley broke.</h2>
-          <p id="overlayText">Press R to try again.</p>
-          <button id="restartButton" type="button">Restart</button>
-        </div>
-      </div>
-      <div class="touch-ui" id="touchUi" aria-label="Touch controls">
-        <div class="touch-pad">
-          <button class="touch-button wide" id="touchForward" type="button">Forward</button>
-          <div class="touch-row">
-            <button class="touch-button" id="touchLeft" type="button">Left</button>
-            <button class="touch-button" id="touchBack" type="button">Back</button>
-            <button class="touch-button" id="touchRight" type="button">Right</button>
-          </div>
-          <button class="touch-button ghost" id="touchSprint" type="button">Run</button>
-        </div>
-        <div class="touch-actions">
-          <div class="touch-row">
-            <button class="touch-button accent" id="touchFire" type="button">Fire</button>
-            <button class="touch-button" id="touchUse" type="button">Use</button>
-          </div>
-          <div class="touch-row">
-            <button class="touch-button" id="touchChop" type="button">Chop</button>
-            <button class="touch-button" id="touchCraft" type="button">Craft</button>
-          </div>
-          <div class="touch-row">
-            <button class="touch-button" id="touchPurify" type="button">Purify</button>
-            <button class="touch-button ghost" id="touchReset" type="button">Reset</button>
-          </div>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <script src="script.js"></script>
-</body>
+    <script type="module" src="./game.js"></script>
+  </body>
 </html>
