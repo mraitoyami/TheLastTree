@@ -443,14 +443,31 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Arial Black',Arial
 .po-btn.outline:hover{background:rgba(255,255,255,.1);}
 
 #hiOverlay{
-  position:fixed;inset:0;background:rgba(0,0,0,.88);
-  display:none;flex-direction:column;align-items:center;justify-content:center;
-  z-index:9200;gap:14px;padding:20px;
+  position:fixed;inset:0;background:rgba(0,0,0,.92);
+  display:none;flex-direction:column;align-items:center;justify-content:flex-start;
+  z-index:9200;gap:10px;padding:24px 16px;overflow-y:auto;
 }
 #hiOverlay.open{display:flex;}
-.hi-h{color:#ffeb3b;font-size:1.8rem;}
-.hi-row{display:flex;justify-content:space-between;align-items:center;padding:8px 16px;border-radius:8px;background:rgba(255,255,255,.07);color:#e8f5e9;font-size:.9rem;font-family:Arial,sans-serif;width:min(90%,340px);margin:2px 0;}
-.hi-row:first-child{background:rgba(255,235,59,.18);color:#ffeb3b;font-weight:900;}
+.hi-h{color:#ffeb3b;font-size:clamp(1.3rem,4vw,1.8rem);font-weight:900;text-align:center;}
+.hi-sub{font-size:.78rem;color:rgba(255,255,255,.45);font-family:Arial,sans-serif;text-align:center;margin-top:-6px;}
+.hi-row{display:flex;align-items:center;gap:8px;padding:10px 16px;border-radius:12px;
+  background:rgba(255,255,255,.07);color:#e8f5e9;font-size:.88rem;
+  font-family:Arial,sans-serif;width:min(96%,420px);box-sizing:border-box;}
+.hi-row.gold{background:rgba(255,215,0,.18);color:#ffeb3b;}
+.hi-row.silver{background:rgba(192,192,192,.12);}
+.hi-row.bronze{background:rgba(205,127,50,.12);}
+#hiRows{display:flex;flex-direction:column;align-items:center;width:100%;gap:4px;max-height:55vh;overflow-y:auto;}
+#hiRows::-webkit-scrollbar{width:4px;}
+#hiRows::-webkit-scrollbar-thumb{background:rgba(255,255,255,.2);border-radius:4px;}
+#hiSetupBox{
+  background:linear-gradient(135deg,rgba(255,152,0,.12),rgba(255,193,7,.08));
+  border:1.5px solid rgba(255,193,7,.35);
+  border-radius:16px;padding:16px 20px;
+  width:min(96%,420px);box-sizing:border-box;
+}
+#hiSetupBox h4{color:#ffc107;font-size:.85rem;margin:0 0 8px;letter-spacing:.3px;}
+#hiSetupBox ol{color:rgba(255,255,255,.75);font-size:.78rem;font-family:Arial,sans-serif;line-height:1.8;padding-left:18px;margin:0;}
+#hiSetupBox code{background:rgba(255,255,255,.12);padding:2px 6px;border-radius:4px;font-size:.75rem;color:#fff;word-break:break-all;}
 
 .particle{position:fixed;pointer-events:none;border-radius:50%;animation:particleFly .8s forwards;z-index:9999;}
 .floatScore{position:fixed;pointer-events:none;font-weight:900;font-size:1.4rem;animation:floatUp .9s forwards;z-index:9999;text-shadow:0 2px 8px rgba(0,0,0,.4);}
@@ -833,6 +850,19 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Arial Black',Arial
     <div id="startParkBar">
       <span class="sp-label">🌳 Таны цэцэрлэг:</span>
       <span id="startParkItems">— ангилж шагнал аваарай! —</span>
+    </div>
+    <div style="width:100%;position:relative;">
+      <span style="position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:1rem;pointer-events:none;">👤</span>
+      <input id="nicknameInput" type="text" maxlength="20"
+        placeholder="Нэрээ оруулна уу…"
+        style="width:100%;padding:11px 14px 11px 38px;border-radius:50px;
+          border:1.5px solid rgba(255,255,255,.25);background:rgba(255,255,255,.1);
+          color:#fff;font-size:.95rem;font-family:Arial,sans-serif;outline:none;
+          box-sizing:border-box;transition:border .2s;"
+        oninput="playerName=this.value.trim()||'Тоглогч';localStorage.setItem('rssNick',this.value.trim())"
+        onfocus="this.style.borderColor='rgba(76,175,80,.7)'"
+        onblur="this.style.borderColor='rgba(255,255,255,.25)'"
+      />
     </div>
     <button class="s-btn primary" onclick="goToLevelSelect()">▶&nbsp; Тоглох</button>
     <button class="s-btn ghost" onclick="showAbout()">ℹ&nbsp; Тоглоомын тухай</button>
@@ -1459,19 +1489,19 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Arial Black',Arial
 
   <!-- ROUND DONE -->
   <div id="roundDone">
-    <h2>Level Complete! 🎉</h2>
+    <h2>Түвшин дууслаа! 🎉</h2>
     <div class="round-stat-card" id="roundStatCard"></div>
     <div style="display:flex;gap:14px;flex-wrap:wrap;justify-content:center;">
-      <button class="po-btn green" onclick="goToReward()">🎁 Claim Reward →</button>
-      <button class="po-btn outline" onclick="quitGame()">🏠 Menu</button>
+      <button class="po-btn green" onclick="goToReward()">🎁 Шагнал авах →</button>
+      <button class="po-btn outline" onclick="quitGame()">🏠 Цэс</button>
     </div>
   </div>
 
   <!-- PAUSE -->
   <div id="pauseOverlay">
-    <h2>⏸ Paused</h2>
-    <button class="po-btn green" onclick="togglePause()">▶ Resume</button>
-    <button class="po-btn outline" onclick="quitGame()">🏠 Menu</button>
+    <h2>⏸ Зогссон</h2>
+    <button class="po-btn green" onclick="togglePause()">▶ Үргэлжлүүлэх</button>
+    <button class="po-btn outline" onclick="quitGame()">🏠 Цэс</button>
   </div>
 </div>
 
@@ -1691,7 +1721,7 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Arial Black',Arial
     </g>
   </svg>
 
-  <div id="rewardHeading">Add a Reward to Your Park</div>
+  <div id="rewardHeading">Цэцэрлэгтээ шагнал нэм</div>
   <div id="rewardItemsRow"></div>
 
 </div>
@@ -1771,8 +1801,8 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Arial Black',Arial
 
   <!-- Top heading -->
   <div id="parkTopBar">
-    <h2>🌳 Your Eco Park</h2>
-    <p id="parkSubText">Your rewards are planted here!</p>
+    <h2>🌳 Таны Эко Цэцэрлэг</h2>
+    <p id="parkSubText">Таны шагналууд энд тарьсан байна!</p>
   </div>
 
   <!-- The ground where items are planted -->
@@ -1786,10 +1816,10 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Arial Black',Arial
 <div id="namePrompt">
   <div id="namePromptBox">
     <div style="font-size:3rem;animation:islandFloat 2.8s ease-in-out infinite">🏆</div>
-    <h3>You did it!</h3>
-    <p>You've completed all 5 levels and built a beautiful Eco Park.<br>What name should go on your certificate?</p>
-    <input id="nameInput" type="text" maxlength="40" placeholder="Enter your name…" autocomplete="off"/>
-    <button id="nameSubmitBtn" onclick="submitName()">Get My Certificate →</button>
+    <h3>Чи хийлээ!</h3>
+    <p>Та 5 түвшнийг бүгдийг дуусгаж, гайхалтай Эко Цэцэрлэг байгуулсан.<br>Гэрчилгээ дээр ямар нэр бичих вэ?</p>
+    <input id="nameInput" type="text" maxlength="40" placeholder="Нэрээ оруулна уу…" autocomplete="off"/>
+    <button id="nameSubmitBtn" onclick="submitName()">Гэрчилгээ авах →</button>
   </div>
 </div>
 
@@ -1798,122 +1828,144 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Arial Black',Arial
   <div id="certWrap">
     <span class="cert-corner-tr">🌿</span>
     <span class="cert-corner-bl">🌿</span>
-    <div class="cert-top-line">Ready, Set, Sort! · Official Recognition</div>
+    <div class="cert-top-line">Бэлэн үү? Ангил! · Албан ёсны хүлээн зөвшөөрөл</div>
     <div class="cert-logo">♻️</div>
-    <div class="cert-game-name">Ready, Set, Sort!</div>
-    <div class="cert-headline">Certificate of Achievement</div>
+    <div class="cert-game-name">Бэлэн үү? Ангил!</div>
+    <div class="cert-headline">Амжилтын гэрчилгээ</div>
     <div class="cert-divider"></div>
-    <div class="cert-recipient-label">This certifies that</div>
+    <div class="cert-recipient-label">Гэрчилнэ:</div>
     <div class="cert-recipient-name" id="certName">—</div>
     <div class="cert-body">
-      has successfully completed all <strong>5 levels</strong><br>
-      of the Waste Sorting Challenge<br>
-      and built a thriving Eco Park! 🌱
+      Хог ангилах сорилтын бүх <strong>5 түвшнийг</strong><br>
+      амжилттай давж, дэлбэрэн цэцэглэсэн<br>
+      Эко Цэцэрлэг байгуулсан! 🌱
     </div>
     <div style="display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin:8px 0">
-      <span class="cert-stat" id="certScore">Score: —<span>Total Points</span></span>
-      <span class="cert-stat">5 / 5<span>Levels Completed</span></span>
-      <span class="cert-stat" id="certRewardsCount">— Rewards<span>Park Items Earned</span></span>
+      <span class="cert-stat" id="certScore">Оноо: —<span>Нийт оноо</span></span>
+      <span class="cert-stat">5 / 5<span>Дуусгасан түвшин</span></span>
+      <span class="cert-stat" id="certRewardsCount">— Шагнал<span>Цэцэрлэгийн зүйлс</span></span>
     </div>
     <div class="cert-divider"></div>
-    <div style="font-size:.8rem;font-weight:900;color:#b8860b;text-transform:uppercase;letter-spacing:.3em;margin:8px 0 6px">Park Rewards Earned</div>
+    <div style="font-size:.8rem;font-weight:900;color:#b8860b;text-transform:uppercase;letter-spacing:.3em;margin:8px 0 6px">Олсон цэцэрлэгийн шагналууд</div>
     <div class="cert-rewards-row" id="certRewardsList"></div>
     <div class="cert-date" id="certDate"></div>
     <div class="cert-seal">🏆</div>
     <br>
-    <button id="certCloseBtn" onclick="closeCertificate()">🎉 Back to Start</button>
+    <button id="certCloseBtn" onclick="closeCertificate()">🎉 Эхлэл рүү буцах</button>
   </div>
 </div>
 
 <!-- HI SCORES -->
 <div id="hiOverlay">
-  <div class="hi-h">🏆 High Scores</div>
+  <div class="hi-h">🏆 Өндөр оноо</div>
+  <div class="hi-sub" id="hiSource">📍 Зөвхөн энэ төхөөрөмж</div>
   <div id="hiRows"></div>
-  <button class="po-btn green" onclick="closeHi()">Close</button>
+  <div id="hiSetupBox" style="display:none">
+    <h4>🌐 Бүх төхөөрөмжөөс харагдахад тохируулах</h4>
+    <ol>
+      <li><a href="https://console.firebase.google.com" target="_blank" style="color:#ffc107">console.firebase.google.com</a> → <strong style="color:#fff">Add project</strong></li>
+      <li>Build → <strong style="color:#fff">Realtime Database</strong> → Create Database → <strong style="color:#fff">Test mode</strong></li>
+      <li>Database URL-ийг хуулна (жш: <code>https://myapp-rtdb.firebaseio.com</code>)</li>
+      <li>Тоглоомын HTML файлыг текст засварлагчаар нээж:<br><code>const FIREBASE_DB = '';</code> → хаалт дотор URL буулга</li>
+    </ol>
+  </div>
+  <button class="po-btn green" onclick="closeHi()">Хаах</button>
 </div>
 
 <script>
+// ══════════════════════════════════════════════════════
+// 🔥 FIREBASE — БҮХ ТӨХӨӨРӨМЖӨӨС ХАРАГДАХ ОНОО
+// ▶ Тохируулах (нэг удаа, 3 минут):
+//  1. console.firebase.google.com → "Add project" → нэр өгөх → Continue
+//  2. Build → Realtime Database → Create Database → Start in TEST MODE → Enable
+//  3. Дэлгэцийн дээд хэсэгт харагдах URL-ийг хуулж доор буулгана:
+//     жишээ:  https://myproject-default-rtdb.firebaseio.com
+// ══════════════════════════════════════════════════════
+const FIREBASE_DB = 'https://thelasttree1-85f46-default-rtdb.asia-southeast1.firebasedatabase.app/'; // ← ЭНД FIREBASE DATABASE URL БУУЛГА
+
+let playerName = localStorage.getItem('rssNick') || 'Тоглогч';
+
 const ALL_ITEMS = [
-  {e:"🍾",n:"Glass wine bottle",    cat:"recycle", why:"Glass is 100% recyclable — rinse before tossing!"},
-  {e:"📰",n:"Newspaper",            cat:"recycle", why:"Recycling 1 ton of paper saves 17 trees."},
-  {e:"🥤",n:"Plastic soda bottle",  cat:"recycle", why:"Remove cap & rinse before recycling."},
-  {e:"🥫",n:"Steel food can",       cat:"recycle", why:"Recycled cans are back on shelves in 60 days!"},
-  {e:"📦",n:"Cardboard box",        cat:"recycle", why:"Flatten boxes so they don't take up bin space."},
-  {e:"🫙",n:"Glass jar",            cat:"recycle", why:"Remove the lid and rinse before recycling."},
-  {e:"🧴",n:"Shampoo bottle",       cat:"recycle", why:"Rinse it out — grease contaminates loads."},
-  {e:"🥛",n:"Milk jug",             cat:"recycle", why:"HDPE plastic jugs are highly recyclable."},
-  {e:"📋",n:"Office paper",         cat:"recycle", why:"Keep paper dry — wet paper can't be recycled."},
-  {e:"🧃",n:"Juice carton",         cat:"recycle", why:"Flatten and recycle with cartons."},
-  {e:"🍌",n:"Banana peel",          cat:"compost", why:"Fruit peels are perfect compost material!"},
-  {e:"🥚",n:"Eggshell",             cat:"compost", why:"Eggshells add valuable calcium to compost."},
-  {e:"🍎",n:"Apple core",           cat:"compost", why:"Fruit cores decompose quickly in compost."},
-  {e:"☕",n:"Coffee grounds",       cat:"compost", why:"Coffee grounds add nitrogen to your compost."},
-  {e:"🌿",n:"Yard clippings",       cat:"compost", why:"Green clippings make rich nutrient mulch."},
-  {e:"🍞",n:"Stale bread",          cat:"compost", why:"Bread composts — bury it to deter pests."},
-  {e:"🥦",n:"Vegetable scraps",     cat:"compost", why:"Veggie scraps decompose in just 2–5 weeks."},
-  {e:"🍂",n:"Fallen leaves",        cat:"compost", why:"Leaves are 'brown carbon' for compost balance."},
-  {e:"🌻",n:"Dead flowers",         cat:"compost", why:"Plant material decomposes into rich soil."},
-  {e:"🛍️",n:"Plastic grocery bag",  cat:"film", why:"Bags tangle recycling machines — use store drop-off."},
-  {e:"🎁",n:"Bubble wrap",          cat:"film", why:"Bubble wrap is plastic film — take to store bin."},
-  {e:"🧴",n:"Bread bag",            cat:"film", why:"Bread bags are #4 plastic film for drop-off."},
-  {e:"📫",n:"Plastic mailer bag",   cat:"film", why:"Soft plastic mailers go to plastic film collection."},
-  {e:"🥗",n:"Produce bag",          cat:"film", why:"Thin produce bags are plastic film — drop off!"},
-  {e:"🩹",n:"Used bandage",         cat:"trash", why:"Soiled medical items always go in the trash."},
-  {e:"🧻",n:"Used tissue",          cat:"trash", why:"Soiled paper cannot be recycled."},
-  {e:"🩴",n:"Worn flip flop",       cat:"trash", why:"Mixed rubber footwear isn't recyclable."},
-  {e:"🎈",n:"Deflated balloon",     cat:"trash", why:"Latex balloons are harmful to wildlife."},
-  {e:"🍕",n:"Greasy pizza box",     cat:"trash", why:"Grease contaminates all recycling — trash it."},
-  {e:"🪒",n:"Disposable razor",     cat:"trash", why:"Multi-material items aren't recyclable."},
-  {e:"🧼",n:"Tiny soap sliver",     cat:"trash", why:"Soap scraps go in the trash."},
-  {e:"🔋",n:"AA battery",           cat:"hhw", why:"Batteries contain toxic metals — Eco-Depot only!"},
-  {e:"💡",n:"CFL light bulb",       cat:"hhw", why:"CFL bulbs contain mercury — never put in trash."},
-  {e:"🧪",n:"Chemical bottle",      cat:"hhw", why:"Household chemicals are hazardous waste."},
-  {e:"🖌️",n:"Liquid paint tin",     cat:"hhw", why:"Liquid paint is hazardous — take to Eco-Depot."},
-  {e:"🩺",n:"Old medicine",         cat:"hhw", why:"Return unused meds to a pharmacy drop-box."},
-  {e:"🛢️",n:"Motor oil container",  cat:"hhw", why:"1 quart of motor oil can pollute 250,000 gallons!"},
-  {e:"🧯",n:"Aerosol spray can",    cat:"hhw", why:"Aerosols with residue are hazardous waste."},
-  {e:"📱",n:"Old smartphone",       cat:"dropoff", why:"Phones contain gold, silver & rare earth metals."},
-  {e:"💻",n:"Laptop computer",      cat:"dropoff", why:"E-waste is the world's fastest growing waste stream."},
-  {e:"🖥️",n:"Old monitor",          cat:"dropoff", why:"Monitors contain lead glass — drop-off only."},
-  {e:"🎮",n:"Video game console",   cat:"dropoff", why:"Game consoles have recyclable circuit boards."},
-  {e:"⌨️",n:"Old keyboard",         cat:"dropoff", why:"Electronics are dismantled for valuable parts."},
-  {e:"🛋️",n:"Old sofa",             cat:"dropoff", why:"Bulk furniture goes to the drop-off center."},
+  {e:"🍾",n:"Шилэн дарсны лонх",       cat:"recycle", why:"Шил 100% дахин боловсруулагддаг — хаяхаасаа өмнө угаана уу!"},
+  {e:"📰",n:"Сонин",                    cat:"recycle", why:"1 тонн цаас дахин боловсруулснаар 17 мод хэмнэгддэг."},
+  {e:"🥤",n:"Хуванцар ундааны лонх",   cat:"recycle", why:"Дахин боловсруулахаасаа өмнө таглаа аваад угаана уу."},
+  {e:"🥫",n:"Ган хоолны хайрцаг",      cat:"recycle", why:"Дахин боловсруулсан хайрцаг 60 хоногт дэлгүүрт буцаж ирдэг!"},
+  {e:"📦",n:"Картон хайрцаг",          cat:"recycle", why:"Хайрцгийг тэгшлэж, саванд орон зай хэмнэнэ."},
+  {e:"🫙",n:"Шилэн лонх",              cat:"recycle", why:"Дахин боловсруулахаасаа өмнө таглаа аваад угаана уу."},
+  {e:"🧴",n:"Шампунийн лонх",          cat:"recycle", why:"Угаана уу — тос бохирдуулагч болдог."},
+  {e:"🥛",n:"Сүүний савны лонх",       cat:"recycle", why:"HDPE хуванцар саванг сайн дахин боловсруулж болдог."},
+  {e:"📋",n:"Оффисын цаас",            cat:"recycle", why:"Цаасыг хуурай байлгана уу — норсон цаас дахин боловсруулагдахгүй."},
+  {e:"🧃",n:"Шүүсний хайрцаг",         cat:"recycle", why:"Тэгшлэж, хайрцагтай хамт дахин боловсруул."},
+  {e:"🍌",n:"Гадилын хальс",           cat:"compost", why:"Жимсний хальс нь гайхалтай компостын материал юм!"},
+  {e:"🥚",n:"Өндгөний бүрхүүл",        cat:"compost", why:"Өндгөний бүрхүүл компостод үнэт кальци нэмдэг."},
+  {e:"🍎",n:"Алимны гол",              cat:"compost", why:"Жимсний гол компостод хурдан задардаг."},
+  {e:"☕",n:"Кофений тунадас",          cat:"compost", why:"Кофений тунадас компостод азот нэмдэг."},
+  {e:"🌿",n:"Хашааны хайчлал",         cat:"compost", why:"Ногоон хайчлал баялаг тэжээллэг бордоо болдог."},
+  {e:"🍞",n:"Хатсан талх",             cat:"compost", why:"Талх компост болдог — хортонгоос сэргийлж булна уу."},
+  {e:"🥦",n:"Ногооны үлдэгдэл",        cat:"compost", why:"Ногооны үлдэгдэл 2–5 долоо хоногт задардаг."},
+  {e:"🍂",n:"Унасан навч",             cat:"compost", why:"Навч нь компостын тэнцвэрт зориулсан 'хүрэн нүүрстөрөгч' юм."},
+  {e:"🌻",n:"Хатсан цэцэг",            cat:"compost", why:"Ургамлын материал баялаг хөрс болж задардаг."},
+  {e:"🛍️",n:"Хуванцар дэлгүүрийн уут", cat:"film", why:"Уутнууд дахин боловсруулах машинд ороогдоно — дэлгүүрийн хүлээн авах цэгийг ашиглана уу."},
+  {e:"🎁",n:"Бөмбөлөгт ороолт",        cat:"film", why:"Бөмбөлөгт ороолт нь хуванцар хальс — дэлгүүрийн саванд аваачна уу."},
+  {e:"🧴",n:"Талхны уут",              cat:"film", why:"Талхны уутнууд #4 хуванцар хальс — хүлээн авах цэгт аваачна уу."},
+  {e:"📫",n:"Хуванцар захидлын уут",   cat:"film", why:"Зөөлөн хуванцар захидлын уутнууд хуванцар хальсны цуглуулгад явдаг."},
+  {e:"🥗",n:"Ногооны нимгэн уут",      cat:"film", why:"Нимгэн ногооны уутнууд хуванцар хальс — хүлээн авах цэгт аваачна уу!"},
+  {e:"🩹",n:"Хэрэглэсэн боолт",        cat:"trash", why:"Бохирдсон эмнэлгийн зүйлс үргэлж хогийн саванд явдаг."},
+  {e:"🧻",n:"Хэрэглэсэн цаас алчуур",  cat:"trash", why:"Бохирдсон цаас дахин боловсруулагдахгүй."},
+  {e:"🩴",n:"Элэгдсэн шахай",          cat:"trash", why:"Холимог резин гутал дахин боловсруулагдахгүй."},
+  {e:"🎈",n:"Хийссэн бөмбөлөг",        cat:"trash", why:"Латекс бөмбөлөгнүүд амьтны ертөнцөд хортой."},
+  {e:"🍕",n:"Тостой пицца хайрцаг",    cat:"trash", why:"Тос бүх дахин боловсруулалтыг бохирдуулдаг — хогийн саванд хий."},
+  {e:"🪒",n:"Нэг удаагийн хусуур",     cat:"trash", why:"Олон материалтай зүйлс дахин боловсруулагдахгүй."},
+  {e:"🧼",n:"Жижиг саваан үлдэгдэл",   cat:"trash", why:"Саваан үлдэгдэл хогийн саванд явдаг."},
+  {e:"🔋",n:"АА батарей",              cat:"hhw", why:"Батарейд хортой металл агуулагддаг — зөвхөн Эко-Депо!"},
+  {e:"💡",n:"ХГФ чийдэн",              cat:"hhw", why:"ХГФ чийдэн мөнгөн ус агуулдаг — хогийн саванд хэзээ ч хийж болохгүй."},
+  {e:"🧪",n:"Химийн лонх",             cat:"hhw", why:"Ахуйн химийн бодис аюултай хаягдал юм."},
+  {e:"🖌️",n:"Шингэн будагны сав",      cat:"hhw", why:"Шингэн будаг аюултай — Эко-Депод аваачна уу."},
+  {e:"🩺",n:"Хуучин эм",               cat:"hhw", why:"Хэрэглэгдээгүй эмийг эмийн сангийн хүлээн авах хайрцагт буцаана уу."},
+  {e:"🛢️",n:"Мотор тосны сав",         cat:"hhw", why:"1 кварт мотор тос 250,000 галлон ус бохирдуулж чаддаг!"},
+  {e:"🧯",n:"Аэрозол баллон",          cat:"hhw", why:"Үлдэгдэлтэй аэрозол баллон аюултай хаягдал юм."},
+  {e:"📱",n:"Хуучин ухаалаг утас",      cat:"dropoff", why:"Гар утас нь алт, мөнгө болон ховор хөрсний металл агуулдаг."},
+  {e:"💻",n:"Зөөврийн компьютер",       cat:"dropoff", why:"Электрон хаягдал нь дэлхийн хамгийн хурдацтай өсөж буй хог юм."},
+  {e:"🖥️",n:"Хуучин дэлгэц",           cat:"dropoff", why:"Дэлгэцүүд хар тугалган шил агуулдаг — зөвхөн хүлээн авах цэгт."},
+  {e:"🎮",n:"Видео тоглоомын консол",   cat:"dropoff", why:"Тоглоомын консол дахин боловсруулагдах схемийн хавтан агуулдаг."},
+  {e:"⌨️",n:"Хуучин гар",              cat:"dropoff", why:"Электроник бараануудыг үнэт эд ангиудын тулд задалдаг."},
+  {e:"🛋️",n:"Хуучин диван",            cat:"dropoff", why:"Том тавилгуудыг хүлээн авах төвд аваачдаг."},
 ];
 
 const CAT_INFO = {
-  recycle:  {label:"♻️ Recycling",      color:"#1976d2", bg:"rgba(25,118,210,.85)",  examples:"Bottles · Cans · Paper · Cardboard"},
-  compost:  {label:"🌿 Backyard Compost",color:"#2e7d32", bg:"rgba(46,125,50,.85)",  examples:"Food scraps · Yard waste · Coffee"},
-  film:     {label:"🛍️ Plastic Film",   color:"#0277bd", bg:"rgba(2,119,189,.85)",   examples:"Grocery bags · Bubble wrap · Mailers"},
-  trash:    {label:"🗑️ Trash",          color:"#546e7a", bg:"rgba(55,71,79,.9)",    examples:"Soiled items · Mixed materials"},
-  hhw:      {label:"☣️ Eco-Depot HHW",  color:"#880e4f", bg:"rgba(136,14,79,.85)",  examples:"Batteries · Paint · Chemicals"},
-  dropoff:  {label:"📍 Residential Drop-Off",color:"#e65100",bg:"rgba(191,54,12,.85)",examples:"Electronics · Appliances · Furniture"},
+  recycle:  {label:"♻️ Дахин боловсруулах", color:"#1976d2", bg:"rgba(25,118,210,.85)",  examples:"Лонх · Хайрцаг · Цаас · Картон"},
+  compost:  {label:"🌿 Компост",             color:"#2e7d32", bg:"rgba(46,125,50,.85)",  examples:"Хоолны үлдэгдэл · Навч · Кофе"},
+  film:     {label:"🛍️ Уутны хуванцар",     color:"#0277bd", bg:"rgba(2,119,189,.85)",   examples:"Дэлгүүрийн уут · Бөмбөлөгт ороолт"},
+  trash:    {label:"🗑️ Хог",                color:"#546e7a", bg:"rgba(55,71,79,.9)",    examples:"Бохирдсон зүйлс · Холимог материал"},
+  hhw:      {label:"☣️ Эко-Депо ХАА",       color:"#880e4f", bg:"rgba(136,14,79,.85)",  examples:"Батарей · Будаг · Химийн бодис"},
+  dropoff:  {label:"📍 Хүргэлтийн цэг",     color:"#e65100", bg:"rgba(191,54,12,.85)", examples:"Электрон бараа · Тавилга"},
 };
 
 const PARK_REWARDS = [
-  {e:"🌲",n:"Tall Pine Tree",    oval:"yellow"},
-  {e:"🌳",n:"Oak Tree",          oval:"green"},
-  {e:"🌸",n:"Cherry Blossoms",   oval:"green"},
-  {e:"🌻",n:"Sunflowers",        oval:"green"},
-  {e:"🛝",n:"Playground",        oval:"green"},
-  {e:"🚲",n:"Bicycle Path",      oval:"green"},
-  {e:"⛲",n:"Fountain",          oval:"teal"},
-  {e:"🏡",n:"Gazebo",            oval:"green"},
-  {e:"🦋",n:"Butterfly Garden",  oval:"green"},
-  {e:"🎠",n:"Carousel",          oval:"teal"},
-  {e:"🌈",n:"Rainbow",           oval:"teal"},
-  {e:"🏋️",n:"Exercise Station",  oval:"green"},
-  {e:"🌺",n:"Flower Garden",     oval:"green"},
-  {e:"🏕️",n:"Picnic Area",       oval:"green"},
-  {e:"🐦",n:"Bird Bath",         oval:"teal"},
-  {e:"🎡",n:"Ferris Wheel",      oval:"yellow"},
+  {e:"🌲",n:"Нарс мод",                oval:"yellow"},
+  {e:"🌳",n:"Хуш мод",                 oval:"green"},
+  {e:"🌸",n:"Интоорын цэцэг",          oval:"green"},
+  {e:"🌻",n:"Наранцэцэг",              oval:"green"},
+  {e:"🛝",n:"Тоглоомын талбай",         oval:"green"},
+  {e:"🚲",n:"Дугуйн зам",              oval:"green"},
+  {e:"⛲",n:"Усан оргилуур",            oval:"teal"},
+  {e:"🏡",n:"Беседка",                 oval:"green"},
+  {e:"🦋",n:"Эрвээхэйн цэцэрлэг",      oval:"green"},
+  {e:"🎠",n:"Карусель",                oval:"teal"},
+  {e:"🌈",n:"Солонго",                 oval:"teal"},
+  {e:"🏋️",n:"Биеийн тамирын байгууламж",oval:"green"},
+  {e:"🌺",n:"Цэцгийн цэцэрлэг",        oval:"green"},
+  {e:"🏕️",n:"Пикникийн газар",         oval:"green"},
+  {e:"🐦",n:"Шувуун усны сав",          oval:"teal"},
+  {e:"🎡",n:"Тэргэнцэр дугуй",          oval:"yellow"},
 ];
 
 const LEVELS = {
-  1:{cats:["recycle","trash"],         itemCount:4,  label:"Recycling & Trash"},
-  2:{cats:["recycle","compost","trash"],itemCount:4,  label:"+ Compost"},
-  3:{cats:["recycle","compost","film","trash"],itemCount:5, label:"+ Plastic Film"},
-  4:{cats:["recycle","compost","film","trash","hhw"],itemCount:5,label:"+ Hazardous Waste"},
-  5:{cats:["recycle","compost","film","trash","hhw","dropoff"],itemCount:6,label:"All Categories"},
+  1:{cats:["recycle","trash"],         itemCount:4,  label:"Дахин боловсруулах & Хог"},
+  2:{cats:["recycle","compost","trash"],itemCount:4,  label:"+ Компост"},
+  3:{cats:["recycle","compost","film","trash"],itemCount:5, label:"+ Уутны хуванцар"},
+  4:{cats:["recycle","compost","film","trash","hhw"],itemCount:5,label:"+ Аюултай хаягдал"},
+  5:{cats:["recycle","compost","film","trash","hhw","dropoff"],itemCount:6,label:"Бүх ангилал"},
 };
 
 let currentLevel=1, score=0, streak=0, maxStreak=0;
@@ -1945,7 +1997,7 @@ function updateStartScreen(){
   if(parkEarned.length){
     el.textContent=parkEarned.map(p=>p.e).join(' ');
   } else {
-    el.textContent='— earn rewards by sorting! —';
+    el.textContent='— ангилж шагнал аваарай! —';
   }
 }
 
@@ -1992,7 +2044,7 @@ function updateLevelSelect(){
   if(parkEarned.length){
     pp.textContent=parkEarned.map(p=>p.e).join('  ');
   } else {
-    pp.textContent='— sort items to earn rewards! —';
+    pp.textContent='— шагнал авахын тулд хог ангил! —';
   }
 }
 
@@ -2010,8 +2062,8 @@ function startLevel(lv){
 
   buildBins(lvCfg.cats);
   adjustLayout();
-  document.getElementById('levelBadge').textContent=`Level ${lv} · ${lvCfg.label}`;
-  document.getElementById('scoreInGame').textContent=`Score: ${score}`;
+  document.getElementById('levelBadge').textContent=`${lv}-р түвшин · ${lvCfg.label}`;
+  document.getElementById('scoreInGame').textContent=`Оноо: ${score}`;
   document.getElementById('roundDone').classList.remove('show');
   document.getElementById('pauseOverlay').classList.remove('show');
   document.getElementById('feedbackOverlay').classList.remove('show');
@@ -2021,12 +2073,12 @@ function startLevel(lv){
 }
 
 const BIN_DEFS={
-  recycle:  {cls:'bin-recycle',  icon:'♻️',  name:'Recycling',       ex:'Bottles · Cans · Paper'},
-  compost:  {cls:'bin-compost',  icon:'🌿',  name:'Backyard Compost', ex:'Food scraps · Yard waste'},
-  film:     {cls:'bin-film',     icon:'🛍️',  name:'Plastic Film',     ex:'Bags · Bubble wrap'},
-  trash:    {cls:'bin-trash',    icon:'🗑️',  name:'Trash',            ex:'Mixed / soiled items'},
-  hhw:      {cls:'bin-hhw',      icon:'☣️',  name:'Eco-Depot HHW',    ex:'Batteries · Paint · Chemicals'},
-  dropoff:  {cls:'bin-dropoff',  icon:'📍',  name:'Residential Drop-Off', ex:'Electronics · Furniture'},
+  recycle:  {cls:'bin-recycle',  icon:'♻️',  name:'Дахин боловсруулах', ex:'Лонх · Хайрцаг · Цаас'},
+  compost:  {cls:'bin-compost',  icon:'🌿',  name:'Компост',             ex:'Хоолны үлдэгдэл · Навч'},
+  film:     {cls:'bin-film',     icon:'🛍️',  name:'Уутны хуванцар',     ex:'Уут · Бөмбөлөгт ороолт'},
+  trash:    {cls:'bin-trash',    icon:'🗑️',  name:'Хог',                ex:'Бохирдсон · Холимог зүйлс'},
+  hhw:      {cls:'bin-hhw',      icon:'☣️',  name:'Эко-Депо ХАА',       ex:'Батарей · Будаг · Химийн бодис'},
+  dropoff:  {cls:'bin-dropoff',  icon:'📍',  name:'Хүргэлтийн цэг',     ex:'Электрон бараа · Тавилга'},
 };
 function buildBins(cats){
   const row=document.getElementById('binsRow');
@@ -2087,7 +2139,7 @@ function showItem(){
   fi.classList.add('animate-in');
 
   updateDots();
-  document.getElementById('scoreInGame').textContent=`Score: ${score}`;
+  document.getElementById('scoreInGame').textContent=`Оноо: ${score}`;
 }
 
 function sortToBin(cat){
@@ -2110,7 +2162,7 @@ function sortToBin(cat){
     streak=0;wrong++;
     sfxBad();
     const bc=getBinCenter(cat);
-    spawnFloat('Wrong! ❌',bc,'#ef5350');
+    spawnFloat('Буруу! ❌',bc,'#ef5350');
     const cb=document.querySelector(`.bin-target[data-cat="${item.cat}"]`);
     if(cb){
       cb.style.outline='5px solid #ffeb3b';
@@ -2119,8 +2171,8 @@ function sortToBin(cat){
     }
   }
 
-  document.getElementById('scoreInGame').textContent=`Score: ${score}`;
-  scoreTopLabel.textContent=`Score: ${score}`;
+  document.getElementById('scoreInGame').textContent=`Оноо: ${score}`;
+  scoreTopLabel.textContent=`Оноо: ${score}`;
   showFeedback(isCorrect,item,cat);
 }
 
@@ -2136,7 +2188,7 @@ function showFeedback(isCorrect,item,sortedCat){
   const ci=CAT_INFO[item.cat];
   document.getElementById('feedbackIcon').textContent=isCorrect?'✅':'❌';
   document.getElementById('feedbackTitle').textContent=
-    isCorrect?(streak>=3?`${streak}× Streak! 🔥`:'Correct! ✓'):'Wrong Bin!';
+    isCorrect?(streak>=3?`${streak}× цуваа! 🔥`:'Зөв! ✓'):'Буруу сав!';
   const badge=document.getElementById('feedbackCatBadge');
   badge.textContent=ci.label;
   badge.style.background=ci.bg;
@@ -2164,11 +2216,11 @@ function endLevel(){
 
   const acc=Math.round(correct/(correct+wrong||1)*100);
   document.getElementById('roundStatCard').innerHTML=`
-    <div class="rs"><span>Level</span><span>Level ${currentLevel} — ${LEVELS[currentLevel].label}</span></div>
-    <div class="rs"><span>Score This Level</span><span style="color:#ffeb3b">+${score}</span></div>
-    <div class="rs"><span>Correct Sorts</span><span>${correct} / ${roundItems.length}</span></div>
-    <div class="rs"><span>Accuracy</span><span>${acc}%</span></div>
-    <div class="rs"><span>Best Streak</span><span>🔥 ${maxStreak}</span></div>`;
+    <div class="rs"><span>Түвшин</span><span>${currentLevel}-р түвшин — ${LEVELS[currentLevel].label}</span></div>
+    <div class="rs"><span>Энэ түвшний оноо</span><span style="color:#ffeb3b">+${score}</span></div>
+    <div class="rs"><span>Зөв ангилалт</span><span>${correct} / ${roundItems.length}</span></div>
+    <div class="rs"><span>Нарийвчлал</span><span>${acc}%</span></div>
+    <div class="rs"><span>Хамгийн сайн цуваа</span><span>🔥 ${maxStreak}</span></div>`;
 
   document.getElementById('roundDone').classList.add('show');
 
@@ -2253,12 +2305,12 @@ function showParkScreen(){
     ground.appendChild(makePlantedEl(p,i,total));
   });
   if(total===0){
-    ground.innerHTML=`<div style="position:absolute;bottom:50%;left:50%;transform:translate(-50%,50%);color:rgba(255,255,255,.5);font-size:.9rem;text-align:center;font-family:Arial,sans-serif">No rewards yet — complete a level first!</div>`;
+    ground.innerHTML=`<div style="position:absolute;bottom:50%;left:50%;transform:translate(-50%,50%);color:rgba(255,255,255,.5);font-size:.9rem;text-align:center;font-family:Arial,sans-serif">Одоохондоо шагнал алга — эхлээд түвшин дуусгана уу!</div>`;
   }
   // Update button label
   const allDone=completedLevels.size>=5;
   const btn=document.getElementById('parkContinueBtn');
-  btn.textContent=allDone?'🏆 Get My Certificate':'Continue →';
+  btn.textContent=allDone?'🏆 Гэрчилгээ авах':'Үргэлжлүүлэх →';
   showScreen('parkScreen');
 }
 
@@ -2282,15 +2334,15 @@ function showCertificate(){
 
 function submitName(){
   const raw=document.getElementById('nameInput').value.trim();
-  const name=raw||'Eco Champion';
+  const name=raw||'Эко Аварга';
   document.getElementById('namePrompt').classList.remove('open');
   buildCertificate(name);
 }
 
 function buildCertificate(name){
   document.getElementById('certName').textContent=name;
-  document.getElementById('certScore').innerHTML=`${score.toLocaleString()}<span>Total Points</span>`;
-  document.getElementById('certRewardsCount').innerHTML=`${parkEarned.length} Reward${parkEarned.length!==1?'s':''}<span>Park Items Earned</span>`;
+  document.getElementById('certScore').innerHTML=`${score.toLocaleString()}<span>Нийт оноо</span>`;
+  document.getElementById('certRewardsCount').innerHTML=`${parkEarned.length} Шагнал<span>Цэцэрлэгийн зүйлс</span>`;
   document.getElementById('certRewardsList').innerHTML=parkEarned
     .map(p=>`<span class="cert-reward-chip">${p.e} ${p.n}</span>`).join('');
   document.getElementById('certDate').textContent=new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
@@ -2390,19 +2442,84 @@ function spawnFloat(txt,pos,color){
 }
 
 const scoreTopLabel=document.getElementById('scoreTopLabel');
-function saveHi(s,lv){
+
+/* ── Save score: localStorage + Firebase ── */
+async function saveHi(s,lv){
+  const name=playerName||'Тоглогч';
+  const entry={name,s,lv,date:new Date().toLocaleDateString('mn-MN')};
+  // Local backup
   let hs=JSON.parse(localStorage.getItem('rssHS3')||'[]');
-  hs.push({s,lv,date:new Date().toLocaleDateString()});
-  hs.sort((a,b)=>b.s-a.s);
-  localStorage.setItem('rssHS3',JSON.stringify(hs.slice(0,10)));
+  hs.push(entry);hs.sort((a,b)=>b.s-a.s);
+  localStorage.setItem('rssHS3',JSON.stringify(hs.slice(0,20)));
+  // Firebase
+  if(FIREBASE_DB){
+    try{
+      await fetch(`${FIREBASE_DB}/scores.json`,{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({name,score:s,level:lv,ts:Date.now()})
+      });
+    }catch(e){console.warn('Firebase save failed:',e);}
+  }
 }
-function openHi(){
-  const hs=JSON.parse(localStorage.getItem('rssHS3')||'[]');
-  document.getElementById('hiRows').innerHTML=hs.length
-    ?hs.map((h,i)=>`<div class="hi-row"><span>#${i+1} Lv${h.lv}</span><span>${h.s.toLocaleString()}</span><span style="opacity:.55;font-size:.75rem">${h.date}</span></div>`).join('')
-    :'<div class="hi-row" style="justify-content:center;opacity:.5">No scores yet!</div>';
+
+/* ── Render leaderboard rows ── */
+function renderHiRows(rows){
+  const el=document.getElementById('hiRows');
+  if(!rows||!rows.length){
+    el.innerHTML='<div class="hi-row" style="justify-content:center;opacity:.5;font-family:Arial,sans-serif">Одоохондоо оноо байхгүй!</div>';
+    return;
+  }
+  const cls=['gold','silver','bronze'];
+  el.innerHTML=rows.slice(0,15).map((h,i)=>{
+    const medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':`<span style="font-weight:900;color:rgba(255,255,255,.5)">#${i+1}</span>`;
+    const name=(h.name||'Тоглогч').slice(0,18);
+    const lv=h.level||h.lv||'?';
+    const sc=(h.score||h.s||0).toLocaleString();
+    return `<div class="hi-row ${cls[i]||''}">
+      <span style="font-size:1.1rem;min-width:30px;text-align:center">${medal}</span>
+      <span style="flex:1;font-weight:900;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${name}</span>
+      <span style="color:#ffeb3b;font-weight:900;margin-right:4px">${sc}</span>
+      <span style="opacity:.45;font-size:.7rem;white-space:nowrap">${lv}-р</span>
+    </div>`;
+  }).join('');
+}
+
+/* ── Open leaderboard ── */
+async function openHi(){
   document.getElementById('hiOverlay').classList.add('open');
+  const setupBox=document.getElementById('hiSetupBox');
+  const sourceLbl=document.getElementById('hiSource');
+
+  if(FIREBASE_DB){
+    setupBox.style.display='none';
+    sourceLbl.textContent='🌐 Бүх төхөөрөмж — ачааллаж байна…';
+    document.getElementById('hiRows').innerHTML=
+      '<div class="hi-row" style="justify-content:center;opacity:.5;font-family:Arial,sans-serif">⏳ Ачааллаж байна…</div>';
+    try{
+      const r=await fetch(`${FIREBASE_DB}/scores.json?orderBy="score"&limitToLast=50`,{cache:'no-store'});
+      const data=await r.json();
+      sourceLbl.textContent='🌐 Бүх төхөөрөмжийн оноо';
+      if(data && typeof data==='object'){
+        const rows=Object.values(data).sort((a,b)=>(b.score||0)-(a.score||0));
+        renderHiRows(rows); return;
+      }
+      renderHiRows([]);
+    }catch(e){
+      console.warn('Firebase load failed:',e);
+      sourceLbl.textContent='⚠️ Холболт амжилтгүй — дотоод оноо';
+      const hs=JSON.parse(localStorage.getItem('rssHS3')||'[]');
+      renderHiRows(hs.map(h=>({name:h.name,score:h.s,level:h.lv})));
+    }
+  } else {
+    // Not configured — show local + setup instructions
+    sourceLbl.textContent='📍 Зөвхөн энэ төхөөрөмж';
+    setupBox.style.display='block';
+    const hs=JSON.parse(localStorage.getItem('rssHS3')||'[]');
+    renderHiRows(hs.map(h=>({name:h.name,score:h.s,level:h.lv})));
+  }
 }
+
 function closeHi(){document.getElementById('hiOverlay').classList.remove('open');}
 
 window.addEventListener('resize',()=>{
@@ -2416,6 +2533,15 @@ document.getElementById('aboutModal').addEventListener('click',function(e){
 document.getElementById('nameInput').addEventListener('keydown',function(e){
   if(e.key==='Enter') submitName();
 });
+// Pre-fill nickname from localStorage
+(function(){
+  const saved=localStorage.getItem('rssNick');
+  if(saved){
+    const inp=document.getElementById('nicknameInput');
+    if(inp) inp.value=saved;
+    playerName=saved;
+  }
+})();
 </script>
 </body>
 </html>
