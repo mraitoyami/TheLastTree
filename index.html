@@ -63,9 +63,11 @@
 
       <div class="controls">
         <p><kbd>Mouse</kbd> look around</p>
+        <p><kbd>Touch drag</kbd> look on phone</p>
         <p><kbd>WASD</kbd> move</p>
         <p><kbd>Shift</kbd> sprint</p>
         <p><kbd>Click</kbd> fire weapon / hunt</p>
+        <p><kbd>Touch buttons</kbd> move and act on phone</p>
         <p><kbd>Space</kbd> cut tree</p>
         <p><kbd>E</kbd> interact</p>
         <p><kbd>Q</kbd> craft weapon at camp</p>
@@ -83,6 +85,31 @@
           <h2 id="overlayTitle">The valley broke.</h2>
           <p id="overlayText">Press R to try again.</p>
           <button id="restartButton" type="button">Restart</button>
+        </div>
+      </div>
+      <div class="touch-ui" id="touchUi" aria-label="Touch controls">
+        <div class="touch-pad">
+          <button class="touch-button wide" id="touchForward" type="button">Forward</button>
+          <div class="touch-row">
+            <button class="touch-button" id="touchLeft" type="button">Left</button>
+            <button class="touch-button" id="touchBack" type="button">Back</button>
+            <button class="touch-button" id="touchRight" type="button">Right</button>
+          </div>
+          <button class="touch-button ghost" id="touchSprint" type="button">Run</button>
+        </div>
+        <div class="touch-actions">
+          <div class="touch-row">
+            <button class="touch-button accent" id="touchFire" type="button">Fire</button>
+            <button class="touch-button" id="touchUse" type="button">Use</button>
+          </div>
+          <div class="touch-row">
+            <button class="touch-button" id="touchChop" type="button">Chop</button>
+            <button class="touch-button" id="touchCraft" type="button">Craft</button>
+          </div>
+          <div class="touch-row">
+            <button class="touch-button" id="touchPurify" type="button">Purify</button>
+            <button class="touch-button ghost" id="touchReset" type="button">Reset</button>
+          </div>
         </div>
       </div>
     </section>
