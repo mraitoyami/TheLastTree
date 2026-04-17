@@ -920,9 +920,7 @@ function updatePrompt() {
   }
 
   if (animal && !game.carrying) {
-    game.prompt = `Click to hunt this ${ANIMAL_TYPES[animal.kind].label}. ${getWeaponStats().name} fires at ${(
-      1 / getEffectiveWeaponCooldown()
-    ).toFixed(1)} shots per second right now.`;
+    game.prompt = `Click to hunt this ${ANIMAL_TYPES[animal.kind].label}. ${getWeaponStats().name} fires at ${(1 / getEffectiveWeaponCooldown()).toFixed(1)} shots per second right now.`;
     return;
   }
 
@@ -1832,7 +1830,7 @@ function renderStatusOverlay() {
   if (!compact) ctx.fillText(`WILDLIFE ${getLiveAnimalCount()}`, sideX + 12, sideY + 84);
   ctx.fillText(`SCORE ${Math.round(game.ecoScore)}`, sideX + sideW * 0.5, sideY + 24);
   ctx.fillText(`RATE ${(1 / getEffectiveWeaponCooldown()).toFixed(1)}/SEC`, sideX + sideW * 0.5, sideY + 44);
-  ctx.fillText(`WEAPON`, sideX + sideW * 0.5, sideY + 64);
+  ctx.fillText("WEAPON", sideX + sideW * 0.5, sideY + 64);
   ctx.font = compact ? "12px monospace" : "13px monospace";
   ctx.fillText(getWeaponStats().name.toUpperCase(), sideX + sideW * 0.5, sideY + (compact ? 82 : 84));
 
