@@ -11,11 +11,20 @@
     <section class="panel">
       <p class="eyebrow">3D Forest Survival Prototype</p>
       <h1>Roots &amp; Rust</h1>
-      <p class="copy">Cut trees to craft faster hunting weapons, or leave the forest standing and breathe easier. Sort garbage cleanly for long-term recovery, or dump it wrong for a dirty combat boost that poisons the valley.</p>
+      <p class="copy">A simple survival loop: hunt food, sort trash, upgrade your weapon, and keep the camp alive long enough to win.</p>
 
       <div class="objective">
         <h2>Mission</h2>
-        <p>Feed the camp, sort every piece of garbage, and keep oxygen above zero while wildfire pressure stays below total collapse.</p>
+        <p>Bring back 4 food, sort all trash, and don't let oxygen hit 0 or fire hit 100.</p>
+      </div>
+
+      <div class="difficulty">
+        <span class="difficulty-label">Mode</span>
+        <div class="difficulty-actions">
+          <button class="mode-button active" id="normalModeButton" type="button">Normal</button>
+          <button class="mode-button" id="easyModeButton" type="button">Easy</button>
+        </div>
+        <p class="difficulty-copy" id="modeText">Normal mode is now the default and much more forgiving than before.</p>
       </div>
 
       <div class="stats">
@@ -63,19 +72,19 @@
 
       <div class="controls">
         <p><kbd>Mouse</kbd> look around</p>
-        <p><kbd>Touch drag</kbd> look on phone</p>
+        <p><kbd>Touch drag</kbd> look around on phone</p>
         <p><kbd>WASD</kbd> move</p>
         <p><kbd>Shift</kbd> sprint</p>
-        <p><kbd>Click</kbd> fire weapon / hunt</p>
-        <p><kbd>Touch buttons</kbd> move and act on phone</p>
+        <p><kbd>Click</kbd> fire / hunt</p>
+        <p><kbd>Touch buttons</kbd> move and act</p>
         <p><kbd>Space</kbd> cut tree</p>
-        <p><kbd>E</kbd> interact</p>
-        <p><kbd>Q</kbd> craft weapon at camp</p>
-        <p><kbd>F</kbd> run recycler purifier</p>
+        <p><kbd>E</kbd> pick up / sort / bless</p>
+        <p><kbd>Q</kbd> craft at camp</p>
+        <p><kbd>F</kbd> purifier at camp</p>
         <p><kbd>R</kbd> restart</p>
       </div>
 
-      <p class="message" id="messageText">Hunt just enough to feed the camp, cut trees only when you need stronger weapons, and decide whether trash becomes clean recovery or dirty short-term power.</p>
+      <p class="message" id="messageText">Start by hunting food and sorting the trash near camp. Cut trees only when you need wood for upgrades.</p>
     </section>
 
     <section class="game-wrap">
