@@ -601,7 +601,7 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Arial Black',Arial
 <body>
 
 <div id="topBar" style="display:none">
-  <span id="topTitle">The Last Tree</span>
+  <span id="topTitle">TheLastHusle</span>
   <div class="top-right">
     <span id="scoreTopLabel"></span>
     <button id="soundBtn" onclick="toggleSound()">🔊</button>
@@ -876,7 +876,7 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Arial Black',Arial
     <div class="ab-h">🗑️ Хогийн ангилал</div>
     <div class="ab-cats">
       <div class="ab-cat"><div class="ab-cat-icon">♻️</div><div class="ab-cat-info"><div class="ab-cat-name">Дахин боловсруулах</div><div class="ab-cat-ex">Шил, хестэй лонх, цаас, картон, шүүсний хайрцаг</div></div></div>
-      <div class="ab-cat"><div class="ab-cat-icon">🌿</div><div class="ab-cat-info"><div class="ab-cat-name">Компост</div><div class="ab-cat-ex">Хоолны үлдэгдэл, навч, кофены тунадас</div></div></div>
+      <div class="ab-cat"><div class="ab-cat-icon">🌿</div><div class="ab-cat-info"><div class="ab-cat-name">Органик</div><div class="ab-cat-ex">Хоолны үлдэгдэл, навч, кофены тунадас</div></div></div>
       <div class="ab-cat"><div class="ab-cat-icon">🛍️</div><div class="ab-cat-info"><div class="ab-cat-name">Уутны хуванцар</div><div class="ab-cat-ex">Дэлгүүрийн уут, бөмбөлөгт ороолт, талхны уут</div></div></div>
       <div class="ab-cat"><div class="ab-cat-icon">🗑️</div><div class="ab-cat-info"><div class="ab-cat-name">Хог</div><div class="ab-cat-ex">Бохирдсон зүйлс, холимог материал, цаас алчуур</div></div></div>
       <div class="ab-cat"><div class="ab-cat-icon">☣️</div><div class="ab-cat-info"><div class="ab-cat-name">Эко-Депо ХАА</div><div class="ab-cat-ex">Батарей, будаг, химийн бодис, чийдэн, аэрозол</div></div></div>
@@ -909,7 +909,7 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Arial Black',Arial
   <div class="level-grid">
     <div class="level-row">
       <button class="level-btn" id="lbtn1" onclick="startLevel(1)">1-р түвшин <span class="lv-sub">Дахин боловсруулах &amp; Хог</span></button>
-      <button class="level-btn" id="lbtn2" onclick="startLevel(2)">2-р түвшин <span class="lv-sub">+ Компост</span></button>
+      <button class="level-btn" id="lbtn2" onclick="startLevel(2)">2-р түвшин <span class="lv-sub">+ Органик</span></button>
       <button class="level-btn" id="lbtn3" onclick="startLevel(3)">3-р түвшин <span class="lv-sub">+ Уутны хуванцар</span></button>
     </div>
     <div class="level-row">
@@ -1876,14 +1876,14 @@ const ALL_ITEMS = [
   {e:"🥛",n:"Сүүний савны лонх",       cat:"recycle", why:"HDPE хуванцар саванг сайн дахин боловсруулж болдог."},
   {e:"📋",n:"Оффисын цаас",            cat:"recycle", why:"Цаасыг хуурай байлгана уу — норсон цаас дахин боловсруулагдахгүй."},
   {e:"🧃",n:"Шүүсний хайрцаг",         cat:"recycle", why:"Тэгшлэж, хайрцагтай хамт дахин боловсруул."},
-  {e:"🍌",n:"Гадилын хальс",           cat:"compost", why:"Жимсний хальс нь гайхалтай компостын материал юм!"},
-  {e:"🥚",n:"Өндгөний бүрхүүл",        cat:"compost", why:"Өндгөний бүрхүүл компостод үнэт кальци нэмдэг."},
-  {e:"🍎",n:"Алимны гол",              cat:"compost", why:"Жимсний гол компостод хурдан задардаг."},
-  {e:"☕",n:"Кофений тунадас",          cat:"compost", why:"Кофений тунадас компостод азот нэмдэг."},
+  {e:"🍌",n:"Гадилын хальс",           cat:"compost", why:"Жимсний хальс нь гайхалтай органикын материал юм!"},
+  {e:"🥚",n:"Өндгөний бүрхүүл",        cat:"compost", why:"Өндгөний бүрхүүл органикод үнэт кальци нэмдэг."},
+  {e:"🍎",n:"Алимны гол",              cat:"compost", why:"Жимсний гол органикод хурдан задардаг."},
+  {e:"☕",n:"Кофений тунадас",          cat:"compost", why:"Кофений тунадас органикод азот нэмдэг."},
   {e:"🌿",n:"Хашааны хайчлал",         cat:"compost", why:"Ногоон хайчлал баялаг тэжээллэг бордоо болдог."},
-  {e:"🍞",n:"Хатсан талх",             cat:"compost", why:"Талх компост болдог — хортонгоос сэргийлж булна уу."},
+  {e:"🍞",n:"Хатсан талх",             cat:"compost", why:"Талх органик болдог — хортонгоос сэргийлж булна уу."},
   {e:"🥦",n:"Ногооны үлдэгдэл",        cat:"compost", why:"Ногооны үлдэгдэл 2–5 долоо хоногт задардаг."},
-  {e:"🍂",n:"Унасан навч",             cat:"compost", why:"Навч нь компостын тэнцвэрт зориулсан 'хүрэн нүүрстөрөгч' юм."},
+  {e:"🍂",n:"Унасан навч",             cat:"compost", why:"Навч нь органикын тэнцвэрт зориулсан 'хүрэн нүүрстөрөгч' юм."},
   {e:"🌻",n:"Хатсан цэцэг",            cat:"compost", why:"Ургамлын материал баялаг хөрс болж задардаг."},
   {e:"🛍️",n:"Хуванцар дэлгүүрийн уут", cat:"film", why:"Уутнууд дахин боловсруулах машинд ороогдоно — дэлгүүрийн хүлээн авах цэгийг ашиглана уу."},
   {e:"🎁",n:"Бөмбөлөгт ороолт",        cat:"film", why:"Бөмбөлөгт ороолт нь хуванцар хальс — дэлгүүрийн саванд аваачна уу."},
@@ -1896,7 +1896,7 @@ const ALL_ITEMS = [
   {e:"🎈",n:"Хийссэн бөмбөлөг",        cat:"trash", why:"Латекс бөмбөлөгнүүд амьтны ертөнцөд хортой."},
   {e:"🍕",n:"Тостой пицца хайрцаг",    cat:"trash", why:"Тос бүх дахин боловсруулалтыг бохирдуулдаг — хогийн саванд хий."},
   {e:"🪒",n:"Нэг удаагийн хусуур",     cat:"trash", why:"Олон материалтай зүйлс дахин боловсруулагдахгүй."},
-  {e:"🧼",n:"Жижиг саваан үлдэгдэл",   cat:"trash", why:"Саваан үлдэгдэл хогийн саванд явдаг."},
+  {e:"🧼",n:"Жижиг савангийн үлдэгдэл",   cat:"trash", why:"Савангийн үлдэгдэл хогийн саванд явдаг."},
   {e:"🔋",n:"АА батарей",              cat:"hhw", why:"Батарейд хортой металл агуулагддаг — зөвхөн Эко-Депо!"},
   {e:"💡",n:"ХГФ чийдэн",              cat:"hhw", why:"ХГФ чийдэн мөнгөн ус агуулдаг — хогийн саванд хэзээ ч хийж болохгүй."},
   {e:"🧪",n:"Химийн лонх",             cat:"hhw", why:"Ахуйн химийн бодис аюултай хаягдал юм."},
@@ -1914,7 +1914,7 @@ const ALL_ITEMS = [
 
 const CAT_INFO = {
   recycle:  {label:"♻️ Дахин боловсруулах", color:"#1976d2", bg:"rgba(25,118,210,.85)",  examples:"Лонх · Хайрцаг · Цаас · Картон"},
-  compost:  {label:"🌿 Компост",             color:"#2e7d32", bg:"rgba(46,125,50,.85)",  examples:"Хоолны үлдэгдэл · Навч · Кофе"},
+  compost:  {label:"🌿 Органик",             color:"#2e7d32", bg:"rgba(46,125,50,.85)",  examples:"Хоолны үлдэгдэл · Навч · Кофе"},
   film:     {label:"🛍️ Уутны хуванцар",     color:"#0277bd", bg:"rgba(2,119,189,.85)",   examples:"Дэлгүүрийн уут · Бөмбөлөгт ороолт"},
   trash:    {label:"🗑️ Хог",                color:"#546e7a", bg:"rgba(55,71,79,.9)",    examples:"Бохирдсон зүйлс · Холимог материал"},
   hhw:      {label:"☣️ Эко-Депо ХАА",       color:"#880e4f", bg:"rgba(136,14,79,.85)",  examples:"Батарей · Будаг · Химийн бодис"},
@@ -1942,7 +1942,7 @@ const PARK_REWARDS = [
 
 const LEVELS = {
   1:{cats:["recycle","trash"],         itemCount:4,  label:"Дахин боловсруулах & Хог"},
-  2:{cats:["recycle","compost","trash"],itemCount:4,  label:"+ Компост"},
+  2:{cats:["recycle","compost","trash"],itemCount:4,  label:"+ Органик"},
   3:{cats:["recycle","compost","film","trash"],itemCount:5, label:"+ Уутны хуванцар"},
   4:{cats:["recycle","compost","film","trash","hhw"],itemCount:5,label:"+ Аюултай хаягдал"},
   5:{cats:["recycle","compost","film","trash","hhw","dropoff"],itemCount:6,label:"Бүх ангилал"},
@@ -2054,7 +2054,7 @@ function startLevel(lv){
 
 const BIN_DEFS={
   recycle:  {cls:'bin-recycle',  icon:'♻️',  name:'Дахин боловсруулах', ex:'Лонх · Хайрцаг · Цаас'},
-  compost:  {cls:'bin-compost',  icon:'🌿',  name:'Компост',             ex:'Хоолны үлдэгдэл · Навч'},
+  compost:  {cls:'bin-compost',  icon:'🌿',  name:'Органик',             ex:'Хоолны үлдэгдэл · Навч'},
   film:     {cls:'bin-film',     icon:'🛍️',  name:'Уутны хуванцар',     ex:'Уут · Бөмбөлөгт ороолт'},
   trash:    {cls:'bin-trash',    icon:'🗑️',  name:'Хог',                ex:'Бохирдсон · Холимог зүйлс'},
   hhw:      {cls:'bin-hhw',      icon:'☣️',  name:'Эко-Депо ХАА',       ex:'Батарей · Будаг · Химийн бодис'},
