@@ -2451,7 +2451,7 @@ function renderHiRows(rows){
     return;
   }
   const cls=['gold','silver','bronze'];
-  el.innerHTML=rows.slice(0,15).map((h,i)=>{
+  el.innerHTML=rows.map((h,i)=>{
     const medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':`<span style="font-weight:900;color:rgba(255,255,255,.5)">#${i+1}</span>`;
     const name=(h.name||'Тоглогч').slice(0,18);
     const lv=h.level||h.lv||'?';
